@@ -1,0 +1,77 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Ajouter un nouvel utilisateur{% endblock %}
+
+{% block content %}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h1>Ajouter un nouvel utilisateur</h1>
+
+        <form action="{{ path('admin_create_user_process') }}" method="POST" class="form-admin card">
+            <div id="user-fields-container">
+                <div class="user-entry">
+                    <label>Prénom :</label>
+                    <input type="text" name="users[0][firstname]" required>
+
+                    <label>Nom :</label>
+                    <input type="text" name="users[0][lastname]" required>
+
+                    <label>Email :</label>
+                    <input type="email" name="users[0][email]" required>
+
+                    <label>Rôle :</label>
+                    <select name="users[0][role]" required>
+                        <option value="">-- Sélectionner un rôle --</option>
+                        <option value="apprenant">Apprenant</option>
+                        <option value="formateur">Formateur</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" id="add-user-btn" class="button button--secondary">Ajouter un autre utilisateur</button>
+            <button type="submit" class="button button--primary">Créer les utilisateurs</button>
+        </form>
+    
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let userIndex = 1;
+
+        document.getElementById('add-user-btn').addEventListener('click', function () {
+            const container = document.getElementById('user-fields-container');
+
+            const newUserDiv = document.createElement('div');
+            newUserDiv.classList.add('user-entry');
+
+            newUserDiv.innerHTML = `
+                <label>Prénom :</label>
+                <input type="text" name="users[${userIndex}][firstname]" required>
+
+                <label>Nom :</label>
+                <input type="text" name="users[${userIndex}][lastname]" required>
+
+                <label>Email :</label>
+                <input type="email" name="users[${userIndex}][email]" required>
+
+                <label>Rôle :</label>
+                <select name="users[${userIndex}][role]" required>
+                    <option value="">-- Sélectionner un rôle --</option>
+                    <option value="apprenant">Apprenant</option>
+                    <option value="formateur">Formateur</option>
+                </select>
+            `;
+
+            container.appendChild(newUserDiv);
+            userIndex++;
+        });
+    </script>
+{% endblock %}

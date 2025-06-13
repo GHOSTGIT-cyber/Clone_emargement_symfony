@@ -1,0 +1,87 @@
+{% extends 'base_apprenant.html.twig' %}
+
+{% block page_title %}Justifier une absence{% endblock %}
+
+{% block page_stylesheet %}
+    <link rel="stylesheet" href="{{ asset('css/apprenant/justifier_absence.css') }}">
+     <link rel="stylesheet" href="{{ asset('css/apprenant/choices_custom_apprenant.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+<main class="main-scrollable">
+    <link rel="stylesheet" href="{{ asset('css/apprenant/justifier_absence.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/apprenant/choices_custom_apprenant.css') }}">
+ <img src="{{ asset('images/gefor.jpg') }}" alt="Logo de Gefor" class="logo-gefor">
+ {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    <h1>Justification d'absence</h1>
+
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+        <div class="form-group">
+            {{ form_label(form.sessionsPassees) }}
+            {{ form_widget(form.sessionsPassees, {'attr': {'id': 'sessions-passees'}}) }}
+            {{ form_errors(form.sessionsPassees) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.sessionsFutures) }}
+            {{ form_widget(form.sessionsFutures, {'attr': {'id': 'sessions-futures'}}) }}
+            {{ form_errors(form.sessionsFutures) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.motifDetails) }}
+            {{ form_widget(form.motifDetails) }}
+            {{ form_errors(form.motifDetails) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.document) }}
+            {{ form_widget(form.document) }}
+            {{ form_errors(form.document) }}
+        </div>
+
+        <div class="form-check mt-3">
+            {{ form_widget(form.rgpdConsent) }}
+            <label class="form-check-label">J’accepte le traitement de mes données personnelles</label>
+            {{ form_errors(form.rgpdConsent) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4">Envoyer</button>
+
+    {{ form_end(form) }}
+</main>
+</div>
+    {% endblock %}
+ {% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+    const passedSelect = document.getElementById('justification_absence_sessionsPassees');
+    const futureSelect = document.getElementById('justification_absence_sessionsFutures');
+
+    // Initialiser Choices.js sur les deux champs
+    if (passedSelect) new Choices(passedSelect, { removeItemButton: true });
+    if (futureSelect) new Choices(futureSelect, { removeItemButton: true });
+
+    // Logique d'activation/désactivation des champs
+    function toggleDisabled(fromSelect, toSelect) {
+        const hasValue = fromSelect.selectedOptions.length > 0;
+        toSelect.disabled = hasValue;
+    }
+
+    if (passedSelect && futureSelect) {
+        passedSelect.addEventListener('change', () => toggleDisabled(passedSelect, futureSelect));
+        futureSelect.addEventListener('change', () => toggleDisabled(futureSelect, passedSelect));
+    }
+});
+    </script>
+{% endblock %}

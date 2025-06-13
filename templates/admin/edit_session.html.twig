@@ -1,0 +1,41 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Modifier la session - {{ session.nom }}{% endblock %}
+
+{% block content %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="{{ label }}-message">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+
+    <h1>Modifier la session - {{ session.nom }}</h1>
+
+    <div>
+
+        {{ form_start(form, {'attr': {'class': 'form-admin card'}}) }}
+        <p style="color: white">Vous pouvez modifier les informations de la session ci-dessous.</p>
+            {{ form_row(form.nom) }}
+            {{ form_row(form.dateDebut) }}
+            {{ form_row(form.dateFin) }}
+            {{ form_row(form.formateur) }}
+            {{ form_row(form.groupe) }}
+            <button class="button button--primary" type="submit">Enregistrer</button>
+        {{ form_end(form) }}
+
+        <div style="display: flex; align-items: center; text-align: center;">
+            <hr style="flex: 1; border: none; height: 1px; background-color: black;">
+            <span style="padding: 0 10px; color: black;">Ou</span>
+            <hr style="flex: 1; border: none; height: 1px; background-color: black;">
+        </div>
+
+        <form class="form-admin card" method="post" action="{{ path('admin_delete_session', {id: session.id}) }}" onsubmit="return confirm('Supprimer cette session ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ session.id) }}">
+            <button class="button button--danger" type="submit">Supprimer la session</button>
+        </form>
+    </div>
+
+    <div class="mt-md">
+        <a href="{{ path('admin_sessions') }}" class="button">← Retour</a>
+    </div>
+{% endblock %} 

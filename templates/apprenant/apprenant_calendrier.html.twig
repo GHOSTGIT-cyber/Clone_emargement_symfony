@@ -1,0 +1,46 @@
+{% extends 'base_apprenant.html.twig' %}
+
+{% block page_title %}Mon planning{% endblock %}
+
+{% block page_stylesheet %}
+    <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/apprenant/apprenant_calendrier.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+<main class="main-scrollable">
+<img src="{{ asset('images/gefor.jpg') }}" alt="Logo de Gefor" class="logo-gefor">
+<h1>Mon planning</h1>
+    <div class="calendar-wrapper">
+    <div class="calendar-legend">
+            <h3>Légende :</h3>
+            <ul>
+                <li><span class="legend-color legend-default"></span> Cours à venir</li>
+                <li><span class="legend-color legend-absent"></span> Absence non justifiée</li>
+                <li><span class="legend-color legend-justifie"></span> Absence justifiée</li>
+                <li><span class="legend-color legend-admin"></span> Vue administrateur</li>
+            </ul>
+        </div>
+    
+        <div id="calendar" class="calendar-wrapper" data-role="{{ app.user.role.value|lower }}"></div>
+
+         <div id="eventModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <p><strong>Salle :</strong> <span id="modalSalle"></span></p>
+            <p><strong>Formateur :</strong> <span id="modalFormateur"></span></p>
+            <p><strong>Justification :</strong> <span id="modalJustification"></span></p>
+        </div>
+    </div> 
+  </div>
+</main>
+    </div>
+{% endblock %}
+
+{% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+    <script src="{{ asset('js/calendar.js') }}"></script>
+{% endblock %}

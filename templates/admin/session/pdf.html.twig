@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 12px; }
+        h1, h2 { text-align: center; }
+        .info { margin-bottom: 15px; }
+        .info p { margin: 2px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
+        .signature img { max-height: 80px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Fiche d'émargement</h1>
+
+    <div class="info">
+        <p><strong>Formation :</strong> {{ session.formation.nom }}</p>
+        <p><strong>Session :</strong> {{ session.nom }}</p>
+        <p><strong>Date :</strong> {{ session.dateDebut|date('d/m/Y H:i') }} – {{ session.dateFin|date('d/m/Y H:i') }}</p>
+        <p><strong>Salle :</strong> {{ session.salle.nom }}</p>
+        <p><strong>Formateur :</strong> {{ session.formateur.firstname }} {{ session.formateur.lastname }}</p>
+        <p><strong>PDF généré le :</strong> {{ "now"|date("d/m/Y H:i") }}</p>
+
+        <p><strong>Signature du formateur :</strong>
+            {% for signature in session.signatures %}
+                {% if signature.user.id == session.formateur.id %}
+                    {% if signature.signatureData %}
+                        Signé le {{ signature.heureSignature|date('d/m/Y H:i') }}
+                    {% else %}
+                        Non signée
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </p>
+
+        {% for signature in session.signatures %}
+            {% if signature.user.id == session.formateur.id and signature.signatureData %}
+                <div class="signature">
+                    <img src="{{ signature.signatureData }}" alt="Signature du formateur">
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <h2>Liste des apprenants</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Statut</th>
+                <th>Date de signature</th>
+                <th>Signature</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for signature in session.signatures %}
+                {% if signature.user.id != session.formateur.id %}
+                    <tr>
+                        <td>{{ signature.user.firstname }} {{ signature.user.lastname }}</td>
+                        <td>{{ signature.statut|capitalize }}</td>
+                        <td>
+                            {% if signature.heureSignature %}
+                                {{ signature.heureSignature|date('d/m/Y H:i') }}
+                            {% else %}
+                                Non signée
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if signature.signatureData %}
+                                <img src="{{ signature.signatureData }}" alt="Signature de l'élève" style="max-height: 60px;" />
+                            {% else %}
+                                Non signée
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

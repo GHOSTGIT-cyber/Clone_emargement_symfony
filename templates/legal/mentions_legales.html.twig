@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions Légales{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        html, body {
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #E85421;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: #E85421;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        ul.toc {
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        ul.toc li {
+            margin: 0.5rem 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: #E85421;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            background-color: #c9441d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Mentions Légales</h1>
+
+    <ul class="toc">
+        <li><a href="#editeur">1. Éditeur du site</a></li>
+        <li><a href="#hebergeur">2. Hébergement</a></li>
+        <li><a href="#propriete">3. Propriété intellectuelle</a></li>
+        <li><a href="#responsabilite">4. Responsabilité</a></li>
+        <li><a href="#loi">5. Loi applicable</a></li>
+    </ul>
+
+    <h2 id="editeur">1. Éditeur du site</h2>
+    <p>
+        Nom de l’organisme / entreprise : <strong>VotreNom / Nom de l'organisation</strong><br>
+        Adresse : <strong>123 Rue de la République, 75000 Paris</strong><br>
+        Téléphone : <strong>01 23 45 67 89</strong><br>
+        Email : <strong>contact@votreprojet.fr</strong><br>
+        Responsable de la publication : <strong>Nom et prénom</strong>
+    </p>
+
+    <h2 id="hebergeur">2. Hébergement</h2>
+    <p>
+        Hébergeur : <strong>Nom de l'hébergeur</strong><br>
+        Adresse : <strong>Adresse complète de l’hébergeur</strong><br>
+        Téléphone : <strong>Numéro de l’hébergeur</strong>
+    </p>
+
+    <h2 id="propriete">3. Propriété intellectuelle</h2>
+    <p>
+        Le contenu du site (textes, images, graphismes, logo, icônes, etc.) est la propriété exclusive de <strong>VotreNom</strong>, sauf mention contraire.
+        Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite sans autorisation préalable.
+    </p>
+
+    <h2 id="responsabilite">4. Responsabilité</h2>
+    <p>
+        L’éditeur du site ne pourra être tenu responsable des dommages directs ou indirects causés au matériel de l’utilisateur lors de l’accès au site.
+    </p>
+
+    <h2 id="loi">5. Loi applicable</h2>
+    <p>
+        Le présent site est soumis à la législation française. En cas de litige, les tribunaux français seront seuls compétents.
+    </p>
+</div>
+
+<button id="backToTopBtn" title="Remonter en haut">↑</button>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.addEventListener("scroll", () => {
+        backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

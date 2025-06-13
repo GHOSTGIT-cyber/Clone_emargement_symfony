@@ -1,0 +1,131 @@
+{% extends 'base_apprenant.html.twig' %}
+
+{% block page_title %}Profil de {{ user.firstname }}{% endblock %}
+
+{% block page_stylesheet %}
+    <link rel="stylesheet" href="{{ asset('css/apprenant/profil.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <main class="main-scrollable">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        <img src="{{ asset('images/gefor.jpg') }}" alt="Logo de Gefor" class="logo-gefor">
+        <h1>Profil de {{ user.firstname }} {{ user.lastname }}</h1>
+
+        <div class="profile-details">
+            <div><strong>Identifiant :</strong> {{ user.username }}</div>
+            <div><strong>Nom et Prénom :</strong> {{ user.firstname }} {{ user.lastname }}</div>
+            <div><strong>Email :</strong> {{ user.email }}</div>
+            <div><strong>Inscrit le :</strong> {{ user.createdAt|date('d/m/Y') }}</div>
+            <div><strong>Photo :</strong>
+                {% if user.profilePicture %}
+                    <img src="{{ asset('uploads/' ~ user.profilePicture) }}" alt="Photo de profil" style="max-width: 150px;" />
+                {% else %}
+                    <p>Aucune photo</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="actions" style="margin-top: 20px;">
+            <button id="edit-btn">Modifier mes informations</button>
+        </div>
+
+        <div id="edit-form-container" style="display: none; margin-top: 20px;">
+            {{ form_start(form) }}
+                {{ form_row(form.username) }}
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.profilePicture) }}
+               
+
+                <div id="preview-container">
+                    <p><strong>Aperçu :</strong></p>
+                    <img id="preview-image" src="#" alt="Aperçu de l'image" style="max-width: 150px; display: none;" />
+                </div>
+
+                {% if user.profilePicture %}
+                     <div class="form-check">
+                        {{ form_row(form.removeProfilePicture) }}
+                    </div>
+                {% endif %}
+
+                <div style="margin-top: 10px;">
+                    <button type="submit">Enregistrer</button>
+                    <button type="button" id="cancel-btn">Annuler</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="actions" style="margin-top: 30px;">
+            <button id="password-edit-btn">Modifier le mot de passe</button>
+        </div>
+
+        <div id="password-form-container" style="display: none; margin-top: 20px;">
+            {{ form_start(changePasswordForm) }}
+                {{ form_row(changePasswordForm.currentPassword) }}
+                {{ form_row(changePasswordForm.plainPassword.first) }}
+                {{ form_row(changePasswordForm.plainPassword.second) }}
+
+                <div style="margin-top: 10px;">
+                    <button type="submit">Mettre à jour le mot de passe</button>
+                    <button type="button" id="cancel-password-btn">Annuler</button>
+                </div>
+            {{ form_end(changePasswordForm) }}
+        </div>
+    </main>
+</div>
+
+<script>
+    const editBtn = document.getElementById('edit-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const container = document.getElementById('edit-form-container');
+    const inputFile = document.getElementById('{{ form.profilePicture.vars.id }}');
+    const previewImage = document.getElementById('preview-image');
+
+    editBtn.addEventListener('click', () => {
+        container.style.display = 'block';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        container.style.display = 'none';
+        inputFile.value = '';
+        previewImage.src = '#';
+        previewImage.style.display = 'none';
+    });
+
+    inputFile?.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = '#';
+            previewImage.style.display = 'none';
+        }
+    });
+
+    const passwordEditBtn = document.getElementById('password-edit-btn');
+    const cancelPasswordBtn = document.getElementById('cancel-password-btn');
+    const passwordContainer = document.getElementById('password-form-container');
+
+    passwordEditBtn.addEventListener('click', () => {
+        passwordContainer.style.display = 'block';
+    });
+
+    cancelPasswordBtn.addEventListener('click', () => {
+        passwordContainer.style.display = 'none';
+    });
+</script>
+{% endblock %}

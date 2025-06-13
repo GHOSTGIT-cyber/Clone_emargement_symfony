@@ -1,0 +1,66 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    color: #212529;
+    margin: 0;
+    text-align: center;
+}
+
+h1 {
+    color: #0E1E5B;
+    margin-bottom: 1.5rem;
+}
+
+canvas {
+    border: 2px solid #E85421;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.actions {
+    margin-top: 1.5rem;
+}
+
+.actions button {
+    background-color: #0E1E5B;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    margin: 0 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* -------------------- Media Query pour la résolution minimale de 1280px -------------------- */
+@media (min-width: 1280px) {
+    .dashboard-content {
+        margin-left: 300px; /* Ajuster la largeur de la marge */
+        margin-right: 300px; /* Ajuster la largeur de la marge */
+    }
+
+    .user-info {
+        margin-bottom: 30px;
+    }
+
+    .user-info h2 {
+        font-size: 2.5rem;
+    }
+
+    .cours-liste h3 {
+        font-size: 1.8rem;
+    }
+
+    .cours-liste li {
+        font-size: 1.2rem;
+        padding: 1.5rem;
+    }
+
+    footer {
+        padding: 20px 0;
+    }
+
+    footer a {
+        font-size: 1.4rem;
+    }
+}

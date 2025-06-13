@@ -1,0 +1,63 @@
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+button[type="submit"] {
+    background-color: #E85421;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Champs textes, select, textarea */
+.form-control,
+textarea {
+    border: 1px solid #0E1E5B;
+    border-radius: 6px;
+    padding: 0.65rem;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Champ fichier */
+.form-control-file {
+    padding: 0.3rem;
+    font-size: 1rem;
+    border: 1px solid #0E1E5B;
+    border-radius: 6px;
+    width: 100%;
+}
+
+/* Focus pour tous les inputs */
+textarea:focus,
+.form-control-file:focus, {
+    border-color: #E85421;
+    box-shadow: 0 0 0 2px rgba(232, 84, 33, 0.25);
+    outline: none;
+}
+
+/* Checkbox RGPD */
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--primary); /* Bordure bleue */
+    margin-right: 0.5rem;
+}
+
+.dashboard-content label {
+    color: #212529;
+    font-weight: 500;
+}

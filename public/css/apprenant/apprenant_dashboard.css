@@ -1,0 +1,116 @@
+/* Fond général orange */
+
+/* Bouton justifier */
+.justify-button {
+    background-color: var(--secondary);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+}
+
+.justify-button:hover {
+    background-color: #1a2f7a;
+}
+
+/* Section titre "Émargement" */
+.section-title {
+    background-color: #D3D3D3;
+    padding: var(--space-sm);
+    font-weight: bold;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-sm);
+}
+
+/* Bloc de jour */
+.day-section {
+    padding-top: var(--space-sm);
+}
+
+/* Titre de jour */
+.day-title {
+    font-weight: 600;
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-xs);
+}
+
+.day-title span {
+    color: var(--text-secondary);
+    font-weight: bold;
+}
+
+/* Chaque cours */
+.cours-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-sm);
+    padding-left: var(--space-sm);
+}
+
+.cours-item i {
+    font-size: var(--text-base);
+    margin-right: var(--space-sm);
+    margin-top: 3px;
+}
+
+.cours-info {
+    font-size: var(--text-sm);
+    line-height: 1.4;
+    color: #333;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: var(--space-sm);
+    border-radius: 8px;
+}
+
+.session-title {
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
+
+
+.session-room {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.session-hours {
+    color: #444;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.session-passes {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+.session-hours-passe {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.sign-button {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    font-size: var(--text-sm);
+}
+
+.sign-button:hover {
+    background-color:rgb(243, 112, 12);
+    text-decoration: none;
+
+}

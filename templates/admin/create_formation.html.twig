@@ -1,0 +1,24 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Ajouter une formation{% endblock %}
+
+{% block content %}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h1>Ajouter une formation</h1>
+
+       {{ form_start(form, {'attr': {'class': 'form-admin card'}}) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.description) }}
+
+            <button type="submit" class="button button--primary">Créer la formation</button>
+        {{ form_end(form) }}
+   
+{% endblock %}

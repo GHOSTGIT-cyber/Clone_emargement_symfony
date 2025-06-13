@@ -1,0 +1,179 @@
+/* Sidebar */
+.sidebar {
+    position: sticky; /* Reste fixe en haut de la page */
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background-color: var(--secondary);
+    color: var(--background);
+    padding-top: var(--space-lg);
+    display: flex;
+    border-right: 2px solid  var(--primary); /* Ligne de séparation */
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000; /* Toujours au-dessus du contenu */
+}
+
+/* Profil utilisateur dans la sidebar */
+.user-profile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    overflow: hidden;
+    cursor: pointer;
+    margin-bottom: var(--space-lg);
+}
+
+.user-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-initials-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--text-2xl);
+    font-weight: bold;
+    color: var(--background);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.user-profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-menu {
+    position: absolute;
+    top: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    margin-top: 8px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-width: 160px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-menu::before {
+    content: '';
+    position: absolute;
+    top: -8px; /* reste correct si margin-top de .user-menu = 8px */
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white; /* doit matcher le fond du menu */
+}
+
+.user-menu a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+.hidden {
+    display: none;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-top {
+    flex-grow: 1; /* Le menu du haut prend tout l'espace disponible */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.menu-bottom {
+    margin-top: auto; /* Permet de pousser le menu vers le bas */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-top: var(--space-lg);
+}
+
+
+li {
+    margin: var(--space-sm) 0;
+}
+
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: var(--space-sm);
+    text-align: center;
+    transition: var(--transition-base);
+}
+
+.sidebar ul li a:hover {
+    color: var(--text-secondary);
+}
+
+.sidebar ul li a.active {
+    color: var(--primary);
+}
+
+.sidebar-divider {
+
+    height: 1px;
+    background:  var(--primary); /* Couleur de la ligne */
+    margin: 10px 0; /* Espacement */
+    color: var(--primary);
+    width: 100%;
+    border: none; 
+}
+
+.sidebar .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    color: inherit;
+    transition: color var(--transition-base);
+}
+
+/* Style de la classe .image */
+.image {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.image img {
+    width: 100%;  /* Ajuste la largeur de l’image */
+    height: 53px;  /* Maintient les proportions */
+    max-width: auto;  /* Empêche l’image de dépasser son conteneur */
+    
+}   
+

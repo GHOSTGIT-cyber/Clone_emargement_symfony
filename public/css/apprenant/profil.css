@@ -1,0 +1,206 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #E85421;
+    margin: 0;
+    padding: 0;
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.logo-gefor {
+    max-width: 200px;
+    height: auto;
+    margin: 1rem auto;
+    display: block;
+}
+
+/* Structure principale */
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+}
+
+.dashboard-content {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+    flex-grow: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 80px; /* espace pour la barre nav en bas */
+    overflow-y: auto;
+}
+
+.main-scrollable {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Navigation en bas */
+.navbar-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #0E1E5B;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    color: white;
+    z-index: 999;
+}
+
+.navbar-bottom a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Footer */
+.footer-fixed {
+    background: #f5f5f5;
+    text-align: center;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+/* Titre */
+h1 {
+    color: #0E1E5B;
+    margin-bottom: 1rem;
+}
+
+/* Bloc d'infos utilisateur */
+.profile-details {
+    background-color: #F1F3F5;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.profile-details div {
+    margin-bottom: 0.75rem;
+}
+
+img {
+    max-width: 120px;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+/* Boutons */
+.actions a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #E85421;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.actions button,
+#edit-form-container button,
+#password-form-container button {
+    padding: 10px 18px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.actions button {
+    background-color: var(--secondary, #007bff);
+    color: white;
+}
+
+.actions button:hover {
+    background-color: #0056b3;
+}
+
+#edit-form-container button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+#edit-form-container button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+#edit-form-container button[type="button"],
+#password-form-container button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+#edit-form-container button[type="button"]:hover,
+#password-form-container button[type="button"]:hover {
+    background-color: #c82333;
+}
+
+/* Champs du formulaire */
+form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #1e90ff;
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #1e90ff;
+    outline: none;
+    box-shadow: 0 0 3px #1e90ff;
+}
+
+/* Aperçu image */
+#preview-container {
+    margin-top: 10px;
+}
+
+#preview-container img {
+    display: block;
+    margin-top: 10px;
+    max-width: 150px;
+}
+
+
+
+/* Responsive */
+@media (min-width: 1280px) {
+    .dashboard-content {
+        max-width: 1000px;
+    }
+
+    .user-info h2 {
+        font-size: 2.5rem;
+    }
+
+    footer {
+        padding: 20px 0;
+    }
+
+   
+}

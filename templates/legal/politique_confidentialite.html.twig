@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        html, body {
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #E85421;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: #E85421;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        ul.toc {
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        ul.toc li {
+            margin: 0.5rem 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: #E85421;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            background-color: #c9441d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Politique de confidentialité</h1>
+
+    <ul class="toc">
+        <li><a href="#donnees">1. Données collectées</a></li>
+        <li><a href="#utilisation">2. Utilisation des données</a></li>
+        <li><a href="#conservation">3. Durée de conservation</a></li>
+        <li><a href="#droits">4. Vos droits</a></li>
+        <li><a href="#cookies">5. Cookies</a></li>
+    </ul>
+
+    <h2 id="donnees">1. Données collectées</h2>
+    <ul>
+        <li>Identité : nom, prénom, email, rôle.</li>
+        <li>Données de présence : signatures, dates, sessions.</li>
+        <li>Authentification : cookie "Se souvenir de moi" (si coché à la connexion).</li>
+    </ul>
+
+    <h2 id="utilisation">2. Utilisation des données</h2>
+    <p>Les données sont utilisées uniquement pour assurer le bon fonctionnement du système d’émargement et la gestion des utilisateurs.</p>
+
+    <h2 id="conservation">3. Durée de conservation</h2>
+    <p>Les données sont conservées tant que vous êtes utilisateur actif, ou jusqu’à 3 ans après votre dernière activité.</p>
+
+    <h2 id="droits">4. Vos droits</h2>
+    <ul>
+        <li>Droit d’accès</li>
+        <li>Droit de rectification</li>
+        <li>Droit à l’effacement</li>
+        <li>Droit à la limitation</li>
+        <li>Droit d’opposition</li>
+    </ul>
+    <p>Pour exercer vos droits, contactez l’administrateur du site ou votre établissement.</p>
+
+    <h2 id="cookies">5. Cookies</h2>
+    <p>Ce site utilise un cookie de session pour l’authentification. Ce cookie est exempté de consentement car il est nécessaire au fonctionnement du site.</p>
+</div>
+
+<button id="backToTopBtn" title="Remonter en haut">↑</button>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.addEventListener("scroll", () => {
+        backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

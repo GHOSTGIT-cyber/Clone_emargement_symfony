@@ -1,0 +1,323 @@
+/*.main-list{
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md) 0;
+    overflow-y: auto; 
+    gap: var(--space-md);
+    box-sizing: border-box;
+}*/
+
+.main-list{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+.main-list-inner {
+    flex: 1;
+    padding: var(--space-md) 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    gap: var(--space-md);
+}
+
+
+.main-list h1 {
+        font-size: var(--text-2xl);
+        text-transform: uppercase;
+        color: var(--text-secondary);
+}
+    
+
+
+.title-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 0 var(--space-md);
+    
+   
+    
+}
+.button-titre {
+    height: 25px;
+}
+
+.sub-nav {
+    margin-top: 10px;
+    background-color: var(--surface); 
+    width: 100%;              
+    padding: 0.5rem 1rem;     
+    box-sizing: border-box;  
+    justify-content: flex-start;
+    border-top: 1px solid var(--text-secondary);
+}
+
+.sub-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.sub-nav li{
+    display: flex;
+    align-items: center;
+}
+
+.sub-nav ul li a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color:var(--text-secondary);
+    font-weight: 600;
+    gap: 6px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.sub-nav ul li a:hover .link-text,
+.sub-nav ul li a.active .link-text {
+    border-bottom: 2px solid var(--secondary);
+    color: var(--secondary);
+}
+
+.sub-nav .badge {
+    background-color: var(--text-secondary);
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+
+.sub-nav-principale {
+    background-color: var(--secondary); 
+    border-top: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary);  
+}
+
+.sub-nav-principale ul li a {
+    color:var(--surface);
+}
+
+.sub-nav-principale ul li a:hover .link-text
+{
+    color: var(--text-secondary);
+}
+.sub-nav-principale ul li a.active .link-text {
+    color: var(--primary);
+}
+
+{/*.badge {
+    background-color: var(--text-secondary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin-left: 6px;
+}*/}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.search-bar input {
+    border: 2px solid #ddd;
+    width: 100%;
+
+}
+
+.search-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si l'espace est insuffisant */
+    gap: var(--space-md); /* ou 1rem par exemple */
+    padding: 0.5rem 1rem;
+    width: 100%; /* Prend toute la largeur disponible */
+    
+}
+
+
+.search-wrapper input[type="text"],
+.search-wrapper select {
+    width: 100%; /* Prend toute la largeur disponible */
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+}
+
+.search-wrapper input[type="text"] {
+    flex: 1;
+    min-width: 300px; /* Largeur minimale pour les champs de texte */
+}
+
+.search-wrapper label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+    color: var(--text-secondary);
+    white-space: nowrap; /* Empêche le texte de se couper sur plusieurs lignes */
+}
+
+.search-bar select {
+    width: 100%; /* Prend toute la largeur disponible */
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    max-width: 80px; /* Limite la largeur du select */
+}
+
+.search-bar label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+    color: var(--text-secondary);
+    white-space: nowrap; /* Empêche le texte de se couper sur plusieurs lignes */
+}
+
+
+.search-wrapper input,
+.search-wrapper label,
+.search-wrapper select {
+    margin: 0;
+    padding: 0.5rem;
+}
+
+.search-wrapper form {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Espace entre les éléments */
+}
+
+.select-page {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espace entre label et select */
+    margin-right: 1rem; /* Espace à droite pour éviter que le select touche le bord */
+    width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.admin-table th, .admin-table td {
+    padding: 10px;
+    text-align: left;
+    padding: 0.5rem 1rem;
+}
+
+.admin-table th {
+    background-color: var(--surface);
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: var(--surface);
+}
+
+.admin-table tbody tr:nth-child(even) input {
+    background-color: var(--surface);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-table tr:hover {
+    background-color: var(--hover-color);
+    cursor: pointer;
+}
+
+
+
+/* Si tu veux styliser aussi dans les tableaux d’admin spécifiques */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #333;  
+}
+
+.session-layout {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 1.5rem;
+    background-color: var(--surface);
+    border-top: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.info-session {
+    flex: 1 1 50%;
+}
+
+.info-session p {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.info-session strong {
+    color: #333;
+}
+
+.status-tag {
+    font-weight: bold;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+}
+
+.status-live {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-upcoming {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.status-ended {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+
+
+.chart-section2 {
+    flex: 1 1 35%;
+    padding: 1.5rem;
+   
+
+}
+
+.chart-section2 h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.chart-wrapper2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,140 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block content %}
+
+    <div class="title-button">
+        <h1>Mon profil</h1>
+    </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <nav class="sub-nav sub-nav-principale">
+            <ul>
+                <li>
+                    <a href="{{ path('admin_profil', { tab: 'compte' }) }}" class="{{ app.request.get('tab') != 'password' ? 'active' : '' }}">
+                         <span class="link-text">Mon Compte</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_profil', { tab: 'password' }) }}" class="{{ app.request.get('tab') == 'password' ? 'active' : '' }}">
+                         <span class="link-text">Mot de passe</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        {% set currentTab = app.request.get('tab') ?? 'compte' %}
+
+        {% if currentTab == 'password' %}
+            <form method="POST" action="{{ path('admin_profil_update') }}" class="form-admin card">
+                <label>Mot de passe actuel :</label>
+                <input type="password" name="current_password" required>
+
+                <label>Nouveau mot de passe :</label>
+                <input type="password" name="new_password" required>
+
+                <label>Confirmer le nouveau mot de passe :</label>
+                <input type="password" name="confirm_password" required>
+
+                <button type="submit" class="button button--primary">Sauvegarder</button>
+            </form>
+        {% else %}
+            <form method="POST" action="{{ path('admin_profil_update') }}" enctype="multipart/form-data" class="form-admin card">
+                <label>Nom :</label>
+                <input type="text" name="lastname" value="{{ app.user.lastname }}" required>
+
+                <label>Prénom :</label>
+                <input type="text" name="firstname" value="{{ app.user.firstname }}" required>
+
+                <label>Email :</label>
+                <input type="email" name="email" value="{{ app.user.email }}" required>
+                
+                <div class="form-note">
+                <label>Photo de profil :</label>
+                <div class="photo-section">
+                <div class="user-profile" id="preview-container">
+                    {% if app.user.profilePicture %}
+                        <img id="profilePreview" src="{{ asset(app.user.profilePicture) }}" alt="Photo de l'utilisateur" class="user-photo">
+                    {% else %}
+                        <div class="user-initials-placeholder" id="initialsPlaceholder">
+                            {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+                        </div>
+                    {% endif %}
+                    
+                </div>
+
+                <input class="choice-pic" type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                </div>
+                <div class="delete-photo">
+                    <input class="input-special" type="checkbox" id="delete_picture" name="delete_picture">
+                    <label for="delete_picture">Supprimer la photo de profil</label>
+                </div>
+                </div>
+
+                <button type="submit" class="button button--primary">Sauvegarder</button>
+            </form>
+        {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+   <script>
+    const input = document.getElementById('profile_picture');
+    const preview = document.getElementById('profilePreview');
+    const container = document.getElementById('preview-container');
+    const initials = document.getElementById('initialsPlaceholder');
+    const deleteCheckbox = document.getElementById('delete_picture');
+
+    // Gestion de la prévisualisation d'une nouvelle image
+    input?.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                } else {
+                    const img = document.createElement('img');
+                    img.id = 'profilePreview';
+                    img.src = event.target.result;
+                    img.className = 'user-photo';
+                    container.innerHTML = '';
+                    container.appendChild(img);
+                }
+                if (initials) {
+                    initials.style.display = 'none';
+                }
+                deleteCheckbox.checked = false; // Ne pas garder la case cochée si on re-sélectionne une image
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Gestion de la suppression de l'image via la checkbox
+    deleteCheckbox?.addEventListener('change', function () {
+        if (deleteCheckbox.checked) {
+            // On vide le champ fichier
+            input.value = '';
+
+            // On supprime l'image existante si elle est dans le DOM
+            const currentPreview = document.getElementById('profilePreview');
+            if (currentPreview) {
+                currentPreview.remove();
+            }
+
+            // On affiche à nouveau les initiales si elles existent
+            if (initials) {
+                initials.style.display = 'flex';
+            }
+        }
+    });
+</script>
+{% endblock %}

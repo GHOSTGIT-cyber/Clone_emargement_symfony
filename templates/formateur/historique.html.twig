@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des sessions{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/formateur.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="page-formateur">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <span>
+                        <div class="user-initials-placeholder">
+                            {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div class="logo">
+                <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR">
+            </div>
+        </div>
+        <a href="{{ path('app_logout') }}">Déconnexion</a>
+        <div class="logout-container">
+            <form action="{{ path('app_logout') }}" method="post">
+                <button type="submit" class="logout-btn">Déconnexion</button>
+            </form>
+        </div>
+        <div class="navigation">
+            <a class="nav-item" href="#">Sessions</a>
+            <a class="nav-item" href="{{ path('mon_planning') }}">Mon planning</a>
+            <a class="nav-item active" href="{{ path('formateur_historique') }}">Historiques</a>
+        </div>
+
+        <div class="content">
+            <div class="day-section">
+                <h2>Historique des sessions ({{ historique|length }})</h2>
+
+                {% for cours in historique %}
+                    <a class="cours-card">
+                        <div class="cours-header">
+                            <div class="cours-title">{{ cours.titre }}</div>
+                            <div class="cours-badge">{{ cours.badge }}</div>
+                        </div>
+                        <div class="cours-details">
+                            <div class="cours-info">
+                                <div class="cours-horaire">{{ cours.horaire }}</div>
+                                <div class="cours-date">{{ cours.date }}</div>
+                            </div>
+                            <div class="cours-meta">
+                                <div class="cours-apprenants">{{ cours.apprenants }} apprenants</div>
+                                <div class="cours-salle">{{ cours.salle }}</div>
+                            </div>
+                        </div>
+                        <div class="cours-signatures">
+                            {{ cours.signatures_obtenues }}/{{ cours.signatures_total }} Signatures
+                        </div>
+                    </a>
+                {% else %}
+                    <div style="text-align:center;color:#888;margin:40px 0;">
+                        Aucun cours passé trouvé dans votre historique.
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                <a href="#" class="pagination-prev">&lt;</a>
+                <span class="pagination-current">1</span>
+                <a href="#" class="pagination-next">&gt;</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

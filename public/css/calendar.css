@@ -1,0 +1,49 @@
+/* Structure de base du calendrier */
+.calendar-wrapper {
+    width: 100%;
+    margin: 0 auto;
+    
+}
+
+/* Couleurs par défaut */
+.fc-event {
+    color: white;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    padding: 2px 4px;
+    border: none;
+}
+
+/* Couleur d’arrière-plan des jours */
+.fc-daygrid-day-number {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Rôle : Apprenant */
+[data-role="apprenant"] .fc-event {
+    font-size: 0.85rem;
+    background-color: #64b5f6; /* Avenir par défaut, mais redéfini en JS si besoin */
+}
+
+/* Rôle : Formateur */
+[data-role="formateur"] .fc-event {
+    font-size: 0.9rem;
+    background-color: #4caf50;
+}
+
+/* Rôle : Admin */
+[data-role="admin"] .fc-event {
+    font-size: 1rem;
+    background-color: #9c27b0;
+}
+
+/* Info-bulle personnalisée si besoin plus tard */
+.fc-tooltip {
+    background-color: #222;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}

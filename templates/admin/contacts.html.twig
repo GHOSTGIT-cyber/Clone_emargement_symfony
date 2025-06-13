@@ -1,0 +1,187 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Contacts - Gestion des contacts{% endblock %}
+
+{% block content %}
+
+        <!--  Titre et bouton d'ajout -->
+       <div class="title-button">
+            <h1>Gestion des contacts</h1>
+            
+            {% if tab == 'apprenants' %}
+                 <a href="{{ path('admin_create_user') }}" class="button button--primary">Ajouter un apprenant</a>
+            {% elseif tab == 'formateurs' %}
+                <a href="{{ path('admin_create_user') }}" class="button button--primary">Ajouter un formateur</a>
+            {% elseif tab == 'groupes' %}
+                <a href="{{ path('admin_create_groupe') }}" class="button button--primary">Créer un groupe</a>
+            {% endif %}
+      </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Onglets principaux : Apprenants / Formateurs / Groupes -->
+        <nav class="sub-nav sub-nav-principale">
+            <ul>
+                <li>
+                    <a href="{{ path('admin_contacts', { tab: 'apprenants' }) }}" class="{{ tab == 'apprenants' ? 'active' : '' }}">
+                        <span class="link-text">Apprenants</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_contacts', { tab: 'formateurs' }) }}" class="{{ tab == 'formateurs' ? 'active' : '' }}">
+                        <span class="link-text">Formateurs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('admin_contacts', { tab: 'groupes' }) }}" class="{{ tab == 'groupes' ? 'active' : '' }}">
+                        <span class="link-text">Groupes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!--Sous-onglets uniquement pour les apprenants -->
+{% if tab == 'apprenants' %}
+    <nav class="sub-nav sub-sub-nav">
+        <ul>
+            <li>
+                <a href="{{ path('admin_contacts', { tab: 'apprenants', filter: 'all' }) }}"
+                   class="{{ filter == 'all' or filter is not defined ? 'active' : '' }}">
+                    <span class="link-text">Tous</span>
+                    <span class="badge">{{ apprenants|length }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('admin_contacts', { tab: 'apprenants', filter: 'absents' }) }}"
+                   class="{{ filter == 'absents' ? 'active' : '' }}">
+                    <span class="link-text">Absences</span>
+                    <span class="badge">{{ totalAbsents }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('admin_contacts', { tab: 'apprenants', filter: 'justificatifs' }) }}"
+                   class="{{ filter == 'justificatifs' ? 'active' : '' }}">
+                    <span class="link-text">Justificatifs</span>
+                    <span class="badge">{{ totalJustificatifs }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+{% elseif tab == 'formateurs' %}
+    <nav class="sub-nav sub-sub-nav">
+        <ul>
+            <li>
+                <a href="{{ path('admin_contacts', { tab: 'formateurs', filter: 'all' }) }}"
+                   class="{{ filter == 'all' ? 'active' : '' }}">
+                    <span class="link-text">Tous</span>
+                    <span class="badge">{{ formateurs|length }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+{% elseif tab == 'groupes' %}
+    <nav class="sub-nav sub-sub-nav">
+        <ul>
+            <li>
+                <a href="{{ path('admin_contacts', { tab: 'groupes', filter: 'all' }) }}"
+                   class="{{ filter == 'all' ? 'active' : '' }}">
+                    <span class="link-text">Tous</span>
+                    <span class="badge">{{ groupes|length }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+        <form class="search-bar" method="get">
+        <input type="hidden" name="tab" value="{{ tab }}">
+    <input 
+        type="text" 
+        name="search" 
+        value="{{ app.request.get('search') }}" 
+        placeholder="Rechercher un contact..." 
+    />
+
+    <div class="select-page">
+        <label for="limit">Afficher par page :</label>
+        <select name="limit" id="limit" onchange="this.form.submit()">
+            {% for n in [5, 10, 15, 20] %}
+                <option value="{{ n }}" {% if app.request.get('limit') == n %}selected{% endif %}>
+                    {{ n }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
+
+        <!--Tableau -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    {% if tab in ['apprenants', 'formateurs'] %}
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                    {% elseif tab == 'groupes' %}
+                        <th>Nom du groupe</th>
+                        <th>Apprenants</th>
+                        <th>Date de création</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody id="contactTable">
+                {% if tab == 'apprenants' %}
+                    {% for user in apprenants.items %}
+                        <tr>
+                            <td>{{ user.lastname }}</td>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3">Aucun apprenant trouvé.</td></tr>
+                    {% endfor %}
+                {% elseif tab == 'formateurs' %}
+                    {% for user in formateurs.items %}
+                        <tr>
+                            <td>{{ user.lastname }}</td>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3">Aucun formateur trouvé.</td></tr>
+                    {% endfor %}
+                {% elseif tab == 'groupes' %}
+                    {% for groupe in groupes.items %}
+                        <tr>
+                            <td>{{ groupe.nom }}</td>
+                            <td>{{ groupe.apprenants|length }}</td>
+                            <td>{{ groupe.createdAt|date('d/m/Y') }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="3">Aucun groupe trouvé.</td></tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+       {% if tab == 'apprenants' %}
+    <div class="pagination">
+        {{ knp_pagination_render(apprenants) }}
+    </div>
+{% endif %}
+{% if tab == 'formateurs' %}
+    <div class="pagination">
+        {{ knp_pagination_render(formateurs) }}
+    </div>
+{% endif %}
+{% if tab == 'groupes' %}
+    <div class="pagination">
+        {{ knp_pagination_render(groupes) }}
+    </div>
+{% endif %}
+
+{% endblock %}

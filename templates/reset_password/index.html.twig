@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+<div class="background-image">
+    <div class="login-card">
+        <h2 class="login-title">RÉINITIALISER LE MOT DE PASSE</h2>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label == 'success' ? 'success-message' : 'error-message' }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="post" class="login-form">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('reset_password') }}">
+
+            <label for="password" class="login-label">NOUVEAU MOT DE PASSE</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" name="password" placeholder="Entrer un nouveau mot de passe" required class="login-input">
+                <div class="input-underline"></div>
+            </div>
+
+            <label for="confirm_password" class="login-label">CONFIRMER LE MOT DE PASSE</label>
+            <div class="input-wrapper">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmer le mot de passe" required class="login-input">
+                <div class="input-underline"></div>
+            </div>
+
+            <button type="submit" class="button button--primary">Réinitialiser le mot de passe</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

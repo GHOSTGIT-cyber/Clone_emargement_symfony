@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des cookies{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        html, body {
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #E85421;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: #E85421;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: #E85421;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            background-color: #c9441d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Gestion des cookies</h1>
+
+    <ul class="toc">
+        <li><a href="#definition">1. Qu’est-ce qu’un cookie ?</a></li>
+        <li><a href="#utilisation">2. Cookies utilisés sur ce site</a></li>
+        <li><a href="#gestion">3. Gestion et suppression des cookies</a></li>
+        <li><a href="#duree">4. Durée de vie des cookies</a></li>
+    </ul>
+
+    <h2 id="definition">1. Qu’est-ce qu’un cookie ?</h2>
+    <p>
+        Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, tablette, smartphone) lors de votre visite sur un site web.
+        Il permet notamment de conserver vos préférences ou d’identifier votre session de navigation.
+    </p>
+
+    <h2 id="utilisation">2. Cookies utilisés sur ce site</h2>
+    <p>Notre site utilise uniquement des cookies strictement nécessaires au bon fonctionnement :</p>
+    <ul>
+        <li><strong>cookie_session :</strong> permet de maintenir votre session active.</li>
+        <li><strong>remember_me :</strong> utilisé uniquement si vous cochez "Se souvenir de moi" lors de la connexion.</li>
+    </ul>
+    <p>Ces cookies ne nécessitent pas votre consentement explicite car ils sont essentiels.</p>
+
+    <h2 id="gestion">3. Gestion et suppression des cookies</h2>
+    <p>
+        Vous pouvez configurer votre navigateur pour bloquer les cookies ou être averti lors de leur dépôt.
+        Le refus d’installation d’un cookie peut entraîner l’impossibilité d’accéder à certaines fonctionnalités.
+    </p>
+
+    <h2 id="duree">4. Durée de vie des cookies</h2>
+    <p>
+        Les cookies sont conservés pendant une durée maximale de 13 mois conformément à la réglementation en vigueur.
+    </p>
+</div>
+
+<button id="backToTopBtn" title="Remonter en haut">↑</button>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.addEventListener("scroll", () => {
+        backToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions d'utilisation{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+    html, body {
+    height: auto;
+    overflow-y: auto;
+}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #E85421;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: #E85421;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        ul.toc {
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        ul.toc li {
+            margin: 0.5rem 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: #E85421;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            background-color: #c9441d;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Conditions générales d’utilisation</h1>
+
+    <ul class="toc">
+        <li><a href="#objet">1. Objet</a></li>
+        <li><a href="#acces">2. Accès au site</a></li>
+        <li><a href="#responsabilite">3. Responsabilités</a></li>
+        <li><a href="#propriete">4. Propriété intellectuelle</a></li>
+        <li><a href="#donnees">5. Données personnelles</a></li>
+        <li><a href="#modification">6. Modification des conditions</a></li>
+    </ul>
+
+    <h2 id="objet">1. Objet</h2>
+    <p>
+        Les présentes conditions régissent l’accès et l’utilisation du site d’émargement par tout utilisateur autorisé (administrateur, formateur, apprenant).
+    </p>
+
+    <h2 id="acces">2. Accès au site</h2>
+    <p>
+        L'accès au site nécessite une authentification sécurisée. Chaque utilisateur dispose d’identifiants personnels et s’engage à ne pas les divulguer.
+    </p>
+
+    <h2 id="responsabilite">3. Responsabilités</h2>
+    <p>
+        L’utilisateur est responsable des données qu’il saisit. L’éditeur ne saurait être tenu responsable d’un mauvais usage ou d’une altération volontaire des données.
+    </p>
+
+    <h2 id="propriete">4. Propriété intellectuelle</h2>
+    <p>
+        Le site, sa structure, ses textes, images et fonctionnalités sont protégés par le droit d’auteur. Toute reproduction est interdite sans autorisation préalable.
+    </p>
+
+    <h2 id="donnees">5. Données personnelles</h2>
+    <p>
+        Les informations collectées sont nécessaires au fonctionnement du site. Elles sont traitées dans le respect de la <a href="{{ path('app_politique_confidentialite') }}">Politique de confidentialité</a>.
+    </p>
+
+    <h2 id="modification">6. Modification des conditions</h2>
+    <p>
+        L’éditeur se réserve le droit de modifier les présentes conditions à tout moment. Les utilisateurs seront informés en cas de changements significatifs.
+    </p>
+</div>
+
+<button id="backToTopBtn" title="Remonter en haut">↑</button>
+
+<script>
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+            backToTopBtn.style.display = "block";
+        } else {
+            backToTopBtn.style.display = "none";
+        }
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

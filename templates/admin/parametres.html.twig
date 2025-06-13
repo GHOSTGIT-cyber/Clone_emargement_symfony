@@ -1,0 +1,82 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Paramètres - Gestion des administrateurs{% endblock %}
+
+{% block content %}
+
+    
+    <div class="title-button">
+        <h1>Gestion des administrateurs</h1>
+        <a href="{{ path('admin_create_admin') }}" class="button button--primary button-titre">Ajouter un utilisateur</a>
+    </div>    
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Sous-navigation -->
+        <nav class="sub-nav">
+    <ul>
+        <li>
+            <a 
+              href="{{ path('admin_parametres') }}" 
+              class="{{ app.request.attributes.get('_route') == 'admin_parametres' ? 'active' : '' }}">
+                <span class="link-text">Utilisateurs</span> 
+                <span class="badge">{{ totalAdmins }}</span>
+            </a>
+        </li>
+        
+    </ul>
+</nav>
+
+     <!--<div class="search-wrapper"> -->
+        <form class="search-bar" method="get">
+            <input type="text" name="search" value="{{ app.request.get('search') }}" placeholder="Rechercher..." />
+          
+            <div class="select-page">
+            <label for="limit">Afficher par page :</label>
+            <select name="limit" id="limit" onchange="this.form.submit()">
+                {% for n in [5, 10, 15, 20] %}
+                    <option value="{{ n }}" {% if app.request.get('limit') == n %}selected{% endif %}>
+                        {{ n }}
+                    </option>
+                {% endfor %}
+            </select>
+            </div>
+        </form>
+    <!-- </div> -->
+        <!-- Tableau des administrateurs -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle interne (modifiable)</th>
+                </tr>
+            </thead>
+            <tbody id="adminTable">
+                {% for admin in admins.items %}
+                    <tr>
+                        <td>{{ admin.firstname }}</td>
+                        <td>{{ admin.lastname }}</td>
+                        <td>{{ admin.email }}</td>
+                        <td>
+                            <input type="text" placeholder="Ex: Responsable administratif">
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Aucun administrateur trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="paginations">
+            {{ knp_pagination_render(admins) }}
+        </div>
+{% endblock %}

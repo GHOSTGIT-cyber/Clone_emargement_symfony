@@ -1,0 +1,224 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Détail de la session -
+	{{ session.nom }}
+{% endblock %}
+
+{% block content %}
+
+	<div class="title-button">
+		<h1>{{ session.nom }}</h1>
+		<a href="{{ path('admin_edit_session', { id: session.id }) }}" class="button button--primary button-titre">Modifier la session</a>
+	</div>
+
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="{{ label }}-message">{{ message }}</div>
+		{% endfor %}
+	{% endfor %}
+
+	{% set total = signatures.getTotalItemCount() %}
+	{% set presenceStats = {
+    presence: signatures|filter(s => s.statut == 'present')|length,
+    absence: signatures|filter(s => s.statut == 'absent')|length,
+    retard: signatures|filter(s => s.statut == 'retard')|length
+} %}
+	{% set presenceStats = presenceStats|merge({
+    percent: {
+        presence: total > 0 ? ((presenceStats.presence / total) * 100)|round(0) : 0,
+        absence: total > 0 ? ((presenceStats.absence / total) * 100)|round(0) : 0,
+        retard: total > 0 ? ((presenceStats.retard / total) * 100)|round(0) : 0
+    }
+}) %}
+	<div class="session-layout">
+		<div class="info-session">
+			<p>
+				<strong>Formation :</strong>
+				{{ session.formation.nom }}</p>
+			<p>
+				<strong>Formateur :</strong>
+				{{ session.formateur.firstname }}
+				{{ session.formateur.lastname }}</p>
+
+			<p>
+				<strong>Dates :</strong>
+				{{ session.dateDebut|date('d/m/Y H:i') }}
+				→
+				{{ session.dateFin|date('d/m/Y H:i') }}</p>
+			<p>
+				<strong>Salle :</strong>
+				{{ session.salle.nom }}</p>
+			<p>
+				<strong>Groupe assigné :</strong>
+				<td>
+					{% if session.groupes|length > 0 %}
+						{% for groupe in session.groupes %}
+							<span class="badge">{{ groupe.nom }}</span>
+						{% endfor %}
+					{% else %}
+						<em>Individuel</em>
+					{% endif %}
+				</td>
+
+				{% set now = "now"|date("U") %}
+				{% set debut = session.dateDebut|date("U") %}{% set fin = session.dateFin|date("U") %}
+			</p>
+			<p>
+				<strong>Statut :</strong>
+				{% if session.active and now >= debut and now < fin %}
+					<span class="status-tag status-live">En cours</span>
+				{% elseif not session.active and now < fin %}
+					<span class="status-tag status-pending">En attente d’activation</span>
+				{% elseif now < debut %}
+					<span class="status-tag status-upcoming">À venir</span>
+				{% elseif now > fin %}
+					<span class="status-tag status-ended">Terminée</span>
+				{% endif %}
+			</p>
+			<p>
+				<strong>
+					<i class="fas fa-file-pdf"></i>
+					PDF :
+				</strong>
+				<a href="{{ path('admin_session_pdf', { id: session.id }) }}" class="button button--secondary">
+					Télécharger la fiche d’émargement
+				</a>
+			</p>
+		</div>
+
+		{% set now = "now"|date("U") %}
+		{% set debut = session.dateDebut|date("U") %}
+		{% set fin = session.dateFin|date("U") %}
+		{% set sessionReady = now >= debut %}
+
+		<section class="chart-section2">
+			<h2>Taux de présence des apprenants</h2>
+
+			{% if sessionReady and total > 0 %}
+				<div class="chart-wrapper2">
+					<canvas id="presenceChart" class="chart-small"></canvas>
+				</div>
+			{% else %}
+				<p style="margin-top: 1rem;  color: #888;">
+					{% if now < debut %}
+						La session n'a pas encore commencé.
+					{% elseif total == 0 %}
+						Aucune donnée de présence disponible.
+					{% endif %}
+				</p>
+			{% endif %}
+		</section>
+
+	</div>
+
+
+	<form method="get" class="search-bar">
+		<input type="text" name="search" value="{{ app.request.get('search') }}" placeholder="Rechercher un apprenant..."/>
+
+		<div class="select-page">
+			<label for="limit">Afficher par page :</label>
+			<select class="input" name="limit" id="limit" onchange="this.form.submit()">
+				{% for n in [5, 10, 15, 20] %}
+					<option value="{{ n }}" {% if app.request.get('limit') == n %} selected {% endif %}>
+						{{ n }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<button type="submit" class="button">Filtrer</button>
+	</form>
+
+	{% if signatures|length > 0 %}
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Statut</th>
+					<th>Justifié</th>
+					<th>Heure de signature</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for signature in signatures %}
+					<tr>
+						<td>{{ signature.user.firstname }}
+							{{ signature.user.lastname }}</td>
+						<td>{{ signature.statut|capitalize }}</td>
+						<td>{{ signature.justifie ? 'Oui' : 'Non' }}</td>
+						<td>
+							{% if signature.heureSignature %}
+								{{ signature.heureSignature|date('d/m/Y H:i') }}
+							{% else %}
+								Non signée
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div class="pagination">
+			{{ knp_pagination_render(signatures) }}
+		</div>
+	{% else %}
+		<p>Aucun apprenant trouvé pour cette session.</p>
+	{% endif %}
+
+	<div class="mt-md">
+		<a href="{{ path('admin_sessions') }}" class="button">← Retour à la liste</a>
+	</div>
+
+	{% if sessionReady and total > 0 %}
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+            const ctx = document.getElementById('presenceChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                 data: {
+                    labels: [
+                        'Présent ({{ presenceStats.percent.presence }}%)',
+                        'Absent ({{ presenceStats.percent.absence }}%)',
+                        'Retard ({{ presenceStats.percent.retard }}%)'
+                    ],
+                    datasets: [
+                        {
+                            label: 'Nombre d\'apprenants',
+                            data: [
+                                {{ presenceStats.presence }},
+                                {{ presenceStats.absence }},
+                                {{ presenceStats.retard }}
+                            ],
+                            backgroundColor: [
+                                '#4CAF50',
+                                '#F44336',
+                                '#FFC107'
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.label + ' : ' + context.raw + ' apprenants';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+	{% endif %}
+{% endblock %}

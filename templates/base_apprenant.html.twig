@@ -1,0 +1,36 @@
+{# 
+    Layout de base pour toutes les pages de l'espace "apprenant"
+    - Étend le layout principal `base.html.twig`
+    - Permet à chaque page d'ajouter son propre fichier CSS
+    - Intègre une zone de titre personnalisable avec block "page_title"
+    - Permet l'injection de scripts JS comme FullCalendar
+    - Affiche le contenu principal dans block "content"
+    - Inclut la barre de navigation en bas (navbar_bottom.html.twig)
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% block page_title %}{% endblock %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/apprenant/global_apprenant.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/apprenant/barnav_apprenant.css') }}">
+    {% block page_stylesheet %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+    {% block content %}{% endblock %}
+    {% include 'apprenant/partials/navbar_bottom.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {% block page_scripts %}{% endblock %}
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,134 @@
+
+.main-content h1 {
+    font-size: var(--text-2xl);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    
+}
+
+.form-admin {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl); /* 16px */
+    background-color: var(--secondary);
+    padding: var(--space-xl);
+    width: 500px; 
+    margin: 0 auto; /* Centre le formulaire horizontalement */ 
+}
+
+.user-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl); /* 16px */
+    padding: var(--space-xl);   
+}
+
+.toggle-container {
+    display: flex;
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne si besoin */
+    gap: var(--space-md); /* 16px */
+   
+}
+
+.toggle-container input[type="radio"] {
+    width: auto;  /* Évite que les radios s'étendent */
+    height: auto; /* Garde la taille par défaut */
+    margin: 0 1px; /* Petit espacement autour des radios */
+}
+
+.toggle-section1,
+.toggle-section2 {
+    width: 100%; /* Les sections prennent toute la largeur et passent en dessous */
+    margin-top: 10px; /* Espacement pour ne pas coller aux radios */
+}
+
+.toggle-section1 select,
+.toggle-section2 select{
+    width: 100%;
+    box-sizing: border-box; /* Inclut le padding/border dans le width */
+    margin: 0;
+}
+
+.large-textarea {
+    width: 100%;
+    min-height: 150px;
+}
+
+.form-note {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.photo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.choice-pic {
+    flex: 1;
+}
+
+
+.delete-photo {
+    display: flex;
+    align-items: center;
+    test-align: center;
+    gap: 0.5rem; /* espace raisonnable entre la checkbox et le label */
+    margin-top: 1rem; /* Espace au-dessus de la section */
+}
+
+.form-special input,
+.form-special select,
+.form-special textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.form-special label {
+    display: block;        /* Pour forcer le retour à la ligne */
+    text-align: left;      /* Aligne le texte à gauche */
+    font-weight: bold;      /* Optionnel : pour la visibilité */
+    margin-bottom: 0.5rem; /* Un peu d’espace sous le label */
+}
+
+
+form {
+    text-align: center;
+    gap: var(--space-md); /* 16px */
+    padding: var(--space-md);
+}
+
+label {
+    font-size: 14px;
+    text-align: left;
+    color: var(--background);
+    font-weight: bold;
+    
+}
+
+input {
+    padding: 12px 12px 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: var(--text-base);
+    box-sizing: border-box;
+    background: var(--background);
+    outline: none;
+    position: relative;
+}
+
+select {
+    padding: 12px 12px 8px;
+    border: none;
+    border-radius: 8px;
+    font-size: var(--text-base);
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--background);
+    outline: none;
+    position: relative;
+}
+

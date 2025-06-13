@@ -1,0 +1,27 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Ajouter un Administrateur{% endblock %}
+
+{% block content %}
+
+        <h1>Ajouter un administrateur</h1>
+
+        {# ✅ Messages flash #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {# ✅ Formulaire sans champ de rôle (défini automatiquement côté contrôleur) #}
+        {{ form_start(form, {'attr': {'class': 'form-admin card'}}) }}
+            {{ form_row(form.firstname) }}
+            {{ form_row(form.lastname) }}
+            {{ form_row(form.email) }}
+
+            <button type="submit" class="button button--primary">Créer l'administrateur</button>
+        {{ form_end(form) }}
+   
+{% endblock %}

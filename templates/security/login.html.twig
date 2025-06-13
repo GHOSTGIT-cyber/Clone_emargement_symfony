@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion émargement{% endblock %}
+
+{% block stylesheets %}
+    {# Si besoin d'un CSS supplémentaire pour cette page #}
+{% endblock %}
+
+{% block body %}
+    <div class="background-image">
+        <div class="login-card">
+            <h2 class="login-title">CONNEXION</h2>
+
+            {# Affichage des messages d'erreur venant du système de sécurité Symfony #}
+            {% if error %}
+                <p class="error-message">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+            {% endif %}
+
+            {# Symfony passe "last_username" en variable #}
+            <form method="post" action="{{ path('app_login') }}" class="login-form">
+
+                <!-- Le token CSRF est OBLIGATOIRE -->
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                
+                <!-- IDENTIFIANT -->
+                <label for="username" class="login-label">IDENTIFIANT</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="_username" placeholder="Nom d'utilisateur" value="{{ last_username }}" required class="login-input">
+                    <div class="input-underline"></div>
+                </div>
+
+                <!-- MOT DE PASSE -->
+                <label for="password" class="login-label">MOT DE PASSE</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="_password" placeholder="Mot de passe" required class="login-input">
+                    <div class="input-underline"></div>
+                </div>
+
+                <!-- REMEMBER ME -->
+                <div class="login-options">
+                    <input type="checkbox" id="remember_me" name="_remember_me" class="checkbox">
+                    <label for="remember_me" class="login-checkbox-label">Se souvenir de moi</label>
+                </div>
+
+                <!-- ACCEPT CONDITIONS -->
+                <div class="login-options">
+                    <input type="checkbox" id="accept_terms" required class="checkbox">
+                    <label for="accept_terms" class="login-checkbox-label">
+                         J’accepte les <a href="{{ path('legal_conditions_utilisation') }}" target="_blank">conditions d’utilisation</a>
+                    </label>
+                </div>
+
+                <div id="terms-error" class="error-message" style="display: none; color: red; margin-top: 10px;">
+                    Vous devez accepter les conditions d’utilisation pour vous connecter.
+                </div>
+
+                <button type="submit" class="button button--primary">Connexion</button>
+            </form>
+
+            {# Lien vers la réinitialisation (futur) #}
+            <a href="{{ path('forgot_password') }}">Mot de passe oublié ?</a>
+
+            {# Affichage du logo #}
+            <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe Gefor" class="login-logo">
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('.login-form');
+            const termsCheckbox = document.getElementById('accept_terms');
+            const errorContainer = document.getElementById('terms-error');
+
+            form.addEventListener('submit', function (e) {
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    errorContainer.style.display = 'block';
+                } else {
+                    errorContainer.style.display = 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}

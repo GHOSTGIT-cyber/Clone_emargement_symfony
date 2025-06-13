@@ -1,0 +1,100 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Sessions - Gestion des sessions
+{% endblock %}
+
+{% block content %}
+
+	<div class="title-button">
+		<h1>Gestion des sessions</h1>
+		<a href="{{ path('admin_create_session') }}" class="button button--primary button-titre">Ajouter une session</a>
+	</div>
+
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="{{ label }}-message">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<nav class="sub-nav">
+		<ul>
+			<li><a href="{{ path('admin_sessions') }}"class="{{ filter is not defined or filter is null ? 'active' : '' }}"><span class="link-text">Toutes</span><span class="badge">{{ totalAll }}</span></a></li>
+			<li><a href="{{ path('admin_sessions', { filter: 'upcoming' }) }}"class="{{ filter == 'upcoming' ? 'active' : '' }}"><span class="link-text">À venir</span><span class="badge">{{ totalFuture }}</span></a></li>
+			<li><a href="{{ path('admin_sessions', { filter: 'past' }) }}"class="{{ filter == 'past' ? 'active' : '' }}"><span class="link-text">Passées</span><span class="badge">{{ totalPast }}</span></a></li>
+		</ul>
+	</nav>
+
+	<!-- <div class="search-wrapper"> -->
+	<form class="search-bar" method="get">
+		<input type="text" name="search" value="{{ app.request.get('search') }}" placeholder="Rechercher une session..."/>
+
+		<div class="select-page">
+			<label for="limit">Afficher par page :</label>
+			<select name="limit" id="limit" onchange="this.form.submit()">
+				{% for n in [5, 10, 15, 20] %}
+					<option value="{{ n }}" {% if app.request.get('limit') == n %} selected {% endif %}>
+						{{ n }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+	</form>
+	<!--</div>-->
+
+	<table class="admin-table">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Formateur</th>
+				<th>Groupe</th>
+				<th>Date de début</th>
+				<th>Date de fin</th>
+			</tr>
+		</thead>
+		<tbody id="sessionTable">
+			{% for session in sessions.items %}
+				<tr>
+					<td>
+						<a href="{{ path('admin_show_session', { id: session.id }) }}">
+							{{ session.nom }}
+						</a>
+					</td>
+					<td>{{ session.formateur.firstname }}
+						{{ session.formateur.lastname }}</td>
+					<td>
+						{% if session.groupes|length > 0 %}
+							{{ session.groupes|map(g => g.nom)|join(', ') }}
+						{% else %}
+							Individuel
+						{% endif %}
+					</td>
+					<td>{{ session.dateDebut|date('d/m/Y H:i') }}</td>
+					<td>{{ session.dateFin|date('d/m/Y H:i') }}</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">Aucune session trouvée.</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<div class="pagination">
+		{{ knp_pagination_render(sessions) }}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		document.getElementById('searchInput').addEventListener('keyup', function () {
+const filter = this.value.toLowerCase();
+const rows = document.querySelectorAll('#sessionTable tr');
+
+rows.forEach(row => {
+const text = row.innerText.toLowerCase();
+row.style.display = text.includes(filter) ? '' : 'none';
+});
+});
+	</script>
+{% endblock %}

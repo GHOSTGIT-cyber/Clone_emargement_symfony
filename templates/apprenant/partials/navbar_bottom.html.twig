@@ -1,0 +1,31 @@
+<footer class="apprenant-footer">
+    <div class="footer-container">
+        <div class="footer-copy">
+            © {{ "now"|date("Y") }} Groupe Gefor. Tous droits réservés.
+        </div>
+
+        <nav class="footer-nav">
+            <a href="{{ path('apprenant_dashboard') }}" class="{{ app.request.attributes.get('_route') == 'apprenant_dashboard' ? 'active' : '' }}">
+                <i class="fas fa-house"></i><br><small>Accueil</small>
+            </a>
+            <a href="{{ path('apprenant_calendrier') }}" class="{{ app.request.attributes.get('_route') == 'apprenant_calendrier' ? 'active' : '' }}">
+                <i class="fas fa-calendar-days"></i><br><small>Calendrier</small>
+            </a>
+            <a href="{{ path('apprenant_profil') }}" class="{{ app.request.attributes.get('_route') starts with 'apprenant_profil' ? 'active' : '' }}">
+                <i class="fas fa-user"></i><br><small>Profil</small>
+            </a>
+            <a href="{{ path('apprenant_justifier_absence') }}" class="{{ app.request.attributes.get('_route') == 'apprenant_justifier_absence' ? 'active' : '' }}">
+                <i class="fas fa-pen-to-square"></i><br><small>Absence</small>
+            </a>
+            <a href="{{ path('app_logout') }}">
+                <i class="fas fa-arrow-right-from-bracket"></i><br><small>Quitter</small>
+            </a>
+        </nav>
+
+        <div class="legal-links">
+            <a href="{{ path('legal_mentions_legales') }}" target="_blank">Mentions légales</a>
+            <a href="{{ path('app_politique_confidentialite') }}" target="_blank">Politique de confidentialité</a>
+            <a href="{{ path('legal_conditions_utilisation') }}" target="_blank">Conditions d’utilisation</a>
+        </div>
+    </div>
+</footer>

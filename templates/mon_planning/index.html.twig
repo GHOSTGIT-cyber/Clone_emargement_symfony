@@ -1,0 +1,78 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon planning intervenant{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/planning.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="planning-container">
+    <div class="planning-header">
+        <div class="avatar-circle">
+            {{ formateur.firstname|default('F')|first|upper }}{{ formateur.lastname|default('A')|first|upper }}
+        </div>
+        <a href="{{ path('app_logout') }}">Déconnexion</a>
+        <div class="logout-container">
+            <form action="{{ path('app_logout') }}" method="post">
+                <button type="submit" class="logout-btn">Déconnexion</button>
+            </form>
+        </div>
+        <img src="{{ asset('images/gefor.jpg') }}" class="planning-logo" alt="Logo Gefor">
+        <nav class="planning-nav">
+            <a href="{{ path('formateur_dashboard') }}" class="nav-link">Sessions</a>
+            <a href="{{ path('mon_planning') }}" class="nav-link active">Mon planning</a>
+            <a class="nav-item"href="{{ path('formateur_historique')}}">Historiques</a>
+        </nav>
+    </div>
+
+    <div class="planning-main">
+        <div id="calendar"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Les events sont passés en JSON depuis le contrôleur
+            let calendarEvents = [];
+            {% if calendar_events is defined %}
+                calendarEvents = {{ calendar_events|raw }};
+            {% endif %}
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                firstDay: 1,
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                },
+                buttonText: {
+                    today:    'Auj.',
+                    month:    'Mois',
+                    week:     'Semaine',
+                    day:      'Jour'
+                },
+                events: calendarEvents,
+                eventClick: function(info) {
+                    // Exemple : affiche le détail du cours
+                    alert(
+                        'Cours : ' + info.event.title +
+                        '\\nDébut : ' + info.event.start.toLocaleDateString()
+                        // Tu peux enrichir ici (ex : salle, groupe, etc.)
+                    );
+                }
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

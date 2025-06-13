@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% block page_title %}{% endblock %}
+{% endblock %}
+
+{% block stylesheets %}
+    {% block page_stylesheet %}{% endblock %}
+    <link rel="stylesheet" href="{{ asset('css/admin_footer.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+ {% include 'admin/partials/sidebar.html.twig' %}
+ <main class="main-content">
+ <div class="main-inner">
+    {% block content %}{% endblock %}
+    </div>
+    {% include 'admin/partials/footer.html.twig' %}
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+    {% block page_scripts %}{% endblock %}
+{% endblock %}
+
+
+
+
+
+

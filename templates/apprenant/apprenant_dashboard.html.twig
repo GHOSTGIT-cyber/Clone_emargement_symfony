@@ -1,0 +1,170 @@
+{#{% block conten %}
+	<div
+		class="dashboard-content">
+		<!-- Affichage des initiales de l'utilisateur -->
+		<div class="user-info">
+			<div
+				class="user-avatar">
+				<!-- Initiales de l'utilisateur (prénom et nom) -->
+				<span>{{ app.user.firstname|slice(0, 1) }}{{ app.user.lastname|slice(0, 1) }}</span>
+			</div>
+			<h2>Bonjour
+				{{ app.user.firstname }}
+				{{ app.user.lastname }}</h2>
+			<link rel="stylesheet" href="{{ asset('css/apprenant_dashboard.css') }}">
+		{% endblock %}
+
+		{% block bod %}
+			<div class="main-content">
+				<header class="header">
+					<div class="avatar">
+						{{ user.firstname|first|upper ~ user.lastname|first|upper }}
+					</div>
+
+					<!-- Bouton "Justifier une absence" -->
+					<div class="absence-button">
+						<a href="{{ path('apprenant_justifier_absence') }}" class="btn btn-absence">Justifier une absence</a>
+					</div>
+
+					<!-- Section Emargement -->
+					<div class="cours-liste">
+						<h3>Emargement</h3>
+						<ul>
+							<li>
+								<span>Aujourd'hui (1)</span>
+								<div class="details">
+									<p>
+										<strong>Anglais salle C</strong>
+									</p>
+									<p>17:15 - 18:00</p>
+								</div>
+							</li>
+							<li>
+								<span>Passé (1)</span>
+								<div class="details">
+									<p>
+										<strong>Ceijm salle B</strong>
+									</p>
+									<p>18:00 - 19:00</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			{% endblock %}#}
+
+
+{% extends 'base_apprenant.html.twig' %}
+
+{% block page_title %}
+	Dashboard
+{% endblock %}
+
+{% block page_stylesheet %}
+
+	<link rel="stylesheet" href="{{ asset('css/apprenant/apprenant_dashboard.css') }}">
+
+{% endblock %}
+
+{% block content %}
+	<div class="dashboard-content">
+		<main class="main-scrollable">
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-success">{{ message }}</div>
+			{% endfor %}
+			{% for message in app.flashes('warning') %}
+				<div class="alert alert-warning">{{ message }}</div>
+			{% endfor %}
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger">{{ message }}</div>
+			{% endfor %}
+
+
+			<img src="{{ asset('images/gefor.jpg') }}" alt="Logo de Gefor" class="logo-gefor">
+
+			<div class="user-info">
+				<div class="user-profile">
+					<a href="{{ path('apprenant_profil') }}">
+						{% if app.user.profilePicture %}
+							<img src="{{ asset('uploads/' ~ app.user.profilePicture) }}" alt="Photo de l'utilisateur" class="user-photo">
+						{% else %}
+							<div class="user-initials-placeholder">
+								{{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+							</div>
+						{% endif %}
+					</a>
+				</div>
+				<h1>Bonjour
+					{{ user.firstname }}</h1>
+			</div>
+
+			<a href="{{ path('apprenant_justifier_absence') }}" class="justify-button">
+				Justifier une absence
+			</a>
+
+			<div class="section-title">Émargement</div>
+
+			{# SECTION : COURS AUJOURD’HUI #}
+			<div class="day-section">
+				<div class="day-title">Aujourd’hui
+					<span>({{ cours_aujourdhui|length }})</span>
+				</div>
+
+				{% if cours_aujourdhui is not empty %}
+					{% for session in cours_aujourdhui %}
+						{% set now = "now"|date("U") %}
+						{% set debut = session.dateDebut|date("U") %}
+						{% set fin = session.dateFin|date("U") %}
+
+						<div class="cours-item">
+							<div class="cours-info">
+								<strong class="session-title">{{ session.nom }}</strong><br>
+								<span class="session-room">Salle :
+									{{ session.salle ? session.salle.nom : 'Non définie' }}</span>
+								|
+								<span class="session-hours">{{ session.dateDebut|date('H:i') }}
+									-
+									{{ session.dateFin|date('H:i') }}</span>
+							</div>
+
+							{% if session.active and now >= debut and now < fin %}
+								<div class="status-tag status-live">En cours</div>
+								<a href="{{ path('apprenant_signature', { id: session.id }) }}" class="sign-button">
+									Signer ma présence
+								</a>
+							{% elseif not session.active and now < fin %}
+								<div class="status-tag status-pending">En attente d’activation</div>
+							{% elseif now > fin %}
+								<div class="status-tag status-ended">Session terminée</div>
+							{% endif %}
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="cours-item">Aucun cours prévu aujourd’hui.</div>
+				{% endif %}
+			</div>
+
+			{# SECTION : COURS PASSÉS (7 derniers jours) #}
+			<div class="day-section">
+				<div class="day-title">Cours passés
+					<span>({{ cours_passes|length }})</span>
+				</div>
+
+				{% if cours_passes is not empty %}
+					{% for session in cours_passes %}
+						<div class="cours-item">
+							<div class="cours-info">
+								<span class="session-passes">{{ session.nom }}<br></span>
+								<span class="session-hours-passe">{{ session.dateDebut|date('d/m/Y H:i') }}
+									-
+									{{ session.dateFin|date('H:i') }}</span>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="cours-item">Aucun cours ces 7 derniers jours.</div>
+				{% endif %}
+			</div>
+		</div>
+	</main>
+</div>{% endblock %}

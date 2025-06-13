@@ -1,0 +1,111 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Formations - Gestion des formations{% endblock %}
+
+{% block content %}
+
+
+        <div class="title-button">
+            <h1>Gestion des formations</h1>
+            <a href="{{ path('admin_create_formation') }}" class="button button--primary button-titre">Ajouter une formation</a>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <nav class="sub-nav">
+    <ul>
+        <li>
+            <a href="{{ path('admin_formations') }}"
+               class="{{ filter is not defined or filter is null ? 'active' : '' }}">
+                <span class="link-text">Toutes</span>
+                <span class="badge">{{ allFormations|length }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('admin_formations', { filter: 'week' }) }}"
+               class="{{ filter == 'week' ? 'active' : '' }}">
+                <span class="link-text">Cette semaine</span>
+                <span class="badge">{{ totalThisWeek }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+        <!-- Barre filtres améliorée -->
+    <form method="get" class="search-bar">
+        <input 
+            type="text" 
+            name="search" 
+            value="{{ app.request.get('search') }}" 
+            placeholder="Rechercher une formation..." 
+        />
+
+        <input 
+            class="input"
+            type="date" 
+            name="date_debut" 
+            value="{{ date_debut }}" 
+        />
+
+        <input
+            class="input" 
+            type="date" 
+            name="date_fin" 
+            value="{{ date_fin }}" 
+        />
+
+        <div class="select-page">
+            <label for="limit">Afficher par page :</label>
+            <select  class="input" name="limit" id="limit" onchange="this.form.submit()">
+                {% for n in [5, 10, 15, 20] %}
+                    <option value="{{ n }}" {% if app.request.get('limit') == n %}selected{% endif %}>
+                        {{ n }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="button">Filtrer</button>
+    </form>
+
+
+        <!-- Tableau des formations -->
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Apprenants</th>
+                    <th>Date de création</th>
+                    <th>Sessions</th> {# nouvelle colonne #}
+                </tr>
+            </thead>
+            <tbody id="formationTable">
+                {% for formation in formations.items %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('admin_formation_show', { id: formation.id }) }}">
+                                {{ formation.nom }}
+                            </a>
+                        </td>
+                        <td>{{ apprenantsCount[formation.id] ?? 0 }}</td>
+                        <td>{{ formation.createdAt|date('d/m/Y') }}</td>
+                        <td>{{ sessionsCount[formation.id] ?? 0 }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">Aucune formation trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            {{ knp_pagination_render(formations) }}
+        </div>
+    
+{% endblock %}

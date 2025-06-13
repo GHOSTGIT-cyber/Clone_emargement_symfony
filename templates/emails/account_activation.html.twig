@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Activation de votre compte</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+    <h2>Bienvenue {{ username }} 👋</h2>
+
+    <p>Un compte vient d'être créé pour vous sur notre plateforme.</p>
+
+    <p>
+        Cliquez sur le lien ci-dessous pour activer votre compte et définir votre mot de passe :
+    </p>
+
+    <p style="text-align: center;">
+        <a href="{{ resetLink }}" style="
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;">
+            Activer mon compte
+        </a>
+    </p>
+
+    <p>Ce lien est valable pendant 1 heure.</p>
+
+    <hr>
+    <p style="font-size: 12px; color: #888;">
+        © {{ "now"|date("Y") }} Gefor Emargement. Tous droits réservés.
+    </p>
+</body>
+</html>

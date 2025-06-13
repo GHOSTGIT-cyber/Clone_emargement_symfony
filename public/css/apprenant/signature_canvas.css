@@ -1,0 +1,64 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: #fff;
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+canvas {
+    border: 2px solid #E85421;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.signature-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.signature-buttons button {
+    background-color: #3498DB;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* -------------------- Media Query pour la résolution minimale de 1280px -------------------- */
+@media (min-width: 1280px) {
+    .dashboard-content {
+        margin-left: 300px; /* Ajuster la largeur de la marge */
+        margin-right: 300px; /* Ajuster la largeur de la marge */
+    }
+
+    .user-info {
+        margin-bottom: 30px;
+    }
+
+    .user-info h2 {
+        font-size: 2.5rem;
+    }
+
+    .cours-liste h3 {
+        font-size: 1.8rem;
+    }
+
+    .cours-liste li {
+        font-size: 1.2rem;
+        padding: 1.5rem;
+    }
+
+    footer {
+        padding: 20px 0;
+    }
+
+    footer a {
+        font-size: 1.4rem;
+    }
+}

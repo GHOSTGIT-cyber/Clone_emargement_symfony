@@ -1,0 +1,122 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Créer une session{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/choices-custom.css') }}">
+{% endblock %}
+
+{% block content %}
+
+        <h1>Créer une session</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+    {{ form_start(form, {'attr': {'class': 'form-admin card form-special'}}) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.formation) }}
+    {{ form_row(form.formateur) }}
+
+      <!-- 👉 Sélection Groupe(s) ou Apprenant(s) -->
+                <div class="toggle-container">
+                    <label>Participants :</label><br>
+
+                    <input type="radio" id="choix_groupe" name="choix_apprenants" value="groupe" checked>
+                    <label for="choix_groupe">Groupe(s)</label>
+
+                    <input type="radio" id="choix_individuel" name="choix_apprenants" value="individuel">
+                    <label for="choix_individuel">Apprenant(s)</label>
+
+                    <!-- Section Groupes -->
+                    <div class="toggle-section1" id="groupe_section" style="display: none;">
+                        <select id="groupe_id" name="groupe_id[]" multiple="multiple" class="choices-select" >
+                            {% for groupe in groupes %}
+                                <option value="{{ groupe.id }}">{{ groupe.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Section Apprenants -->
+                    <div class="toggle-section2" id="apprenants_section" >
+                        <select id="apprenants" name="apprenants[]" multiple="multiple" class="choices-select" >
+                            {% for apprenant in apprenants %}
+                                <option value="{{ apprenant.id }}">{{ apprenant.firstname }} {{ apprenant.lastname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+    {{ form_row(form.salleNom) }}
+    <datalist id="salles">
+        {% for salle in salles %}
+            <option value="{{ salle.nom }}"></option>
+        {% endfor %}
+    </datalist>
+
+    {{ form_row(form.dateDebut) }}
+    {{ form_row(form.dateFin) }}
+
+    <button type="submit" class="button button--primary">Créer</button>
+{{ form_end(form) }}
+  
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    // Apprenants
+    const apprenantsSelect = document.getElementById('apprenants');
+    if (apprenantsSelect) {
+        new Choices(apprenantsSelect, {
+            removeItemButton: true,
+            placeholderValue: 'Sélectionner un ou plusieurs apprenants',
+            searchPlaceholderValue: 'Rechercher un apprenant...',
+            noResultsText: 'Aucun apprenant trouvé',
+            noChoicesText: 'Aucun apprenant disponible'
+        });
+    }
+
+    // Groupes
+    const groupeSelect = document.getElementById('groupe_id');
+    if (groupeSelect) {
+        new Choices(groupeSelect, {
+            removeItemButton: true,
+            placeholderValue: 'Sélectionner un ou plusieurs groupes',
+            searchPlaceholderValue: 'Rechercher un groupe...',
+            noResultsText: 'Aucun groupe trouvé',
+            noChoicesText: 'Aucun groupe disponible'
+        });
+    }
+
+    const choixGroupe = document.getElementById('choix_groupe');
+    const choixIndividuel = document.getElementById('choix_individuel');
+    const groupeSection = document.getElementById('groupe_section');
+    const apprenantsSection = document.getElementById('apprenants_section');
+
+    function toggleSections() {
+        if (choixGroupe.checked) {
+            groupeSection.style.display = 'block';
+            apprenantsSection.style.display = 'none';
+        } else {
+            groupeSection.style.display = 'none';
+            apprenantsSection.style.display = 'block';
+        }
+    }
+
+    choixGroupe.addEventListener('change', toggleSections);
+    choixIndividuel.addEventListener('change', toggleSections);
+
+    toggleSections(); // init on page load
+});
+    </script>
+{% endblock %}

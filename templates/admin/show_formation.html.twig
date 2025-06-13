@@ -1,0 +1,82 @@
+{% extends 'base_admin_list.html.twig' %}
+
+{% block title %}Détail de la formation -
+	{{ formation.nom }}
+{% endblock %}
+
+{% block content %}
+	<div class="title-button">
+		<h1>{{ formation.nom }}</h1>
+		<a href="{{ path('admin_edit_formation', { id: formation.id }) }}" class="button button--primary button-titre">Modifier la formation</a>
+	</div>
+
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="{{ label }}-message">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+
+	<form method="get" class="search-bar">
+		<input type="text" name="search" value="{{ app.request.get('search') }}" placeholder="Rechercher une sessions..."/>
+
+		<input class="input" type="date" name="date_debut" value="{{ date_debut }}"/>
+
+		<input class="input" type="date" name="date_fin" value="{{ date_fin }}"/>
+
+		<div class="select-page">
+			<label for="limit">Afficher par page :</label>
+			<select class="input" name="limit" id="limit" onchange="this.form.submit()">
+				{% for n in [5, 10, 15, 20] %}
+					<option value="{{ n }}" {% if app.request.get('limit') == n %} selected {% endif %}>
+						{{ n }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<button type="submit" class="button">Filtrer</button>
+	</form>
+
+	{% if formation.sessions is not empty %}
+		<table class="admin-table">
+			<thead>
+				<tr>
+					<th>Sessions associées</th>
+					<th>Date de début</th>
+					<th>Date de fin</th>
+					<th>Formateur</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for session in sessions %}
+					<tr>
+						<td>{{ session.nom }}</td>
+						<td>{{ session.dateDebut|date('d/m/Y H:i') }}</td>
+						<td>{{ session.dateFin|date('d/m/Y H:i') }}</td>
+						<td>
+							{% if session.formateur %}
+								{{ session.formateur.firstname }}
+								{{ session.formateur.lastname }}
+							{% else %}
+								<em>Aucun formateur assigné</em>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>Aucune session liée à cette formation.</p>
+	{% endif %}
+
+	<div class="pagination">
+		{{ knp_pagination_render(sessions) }}
+	</div>
+
+	<div class="mt-md">
+		<a href="{{ path('admin_formations') }}" class="button">← Retour à la liste</a>
+	</div>
+{% endblock %}

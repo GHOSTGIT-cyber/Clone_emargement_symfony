@@ -1,0 +1,74 @@
+{% extends 'base_apprenant.html.twig' %}
+
+{% block page_title %}Canvas de signature{% endblock %}
+
+{% block page_stylesheet %}
+    <link rel="stylesheet" href="{{ asset('css/apprenant/signature_canvas.css') }}">
+{% endblock %}
+
+{% block content %}
+    
+    <h2>Signer votre présence</h2>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <canvas id="signature-canvas" width="300" height="150" style="border:1px solid #ccc;"></canvas>
+
+    <div class="signature-buttons">
+        <button id="clear-canvas">Effacer</button>
+        <button id="submit-signature">Valider</button>
+    </div>
+
+    <form id="signature-form" method="POST">
+        <input type="hidden" name="signatureData" id="signatureData">
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    const canvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function getMousePos(evt) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+            x: (evt.clientX - rect.left) * (canvas.width / rect.width),
+            y: (evt.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    canvas.addEventListener('mousedown', e => {
+        drawing = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        drawing = false;
+    });
+
+    canvas.addEventListener('mousemove', e => {
+        if (!drawing) return;
+        const pos = getMousePos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    });
+
+    document.getElementById('clear-canvas').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    document.getElementById('submit-signature').addEventListener('click', () => {
+        const dataURL = canvas.toDataURL();
+        document.getElementById('signatureData').value = dataURL;
+        document.getElementById('signature-form').submit();
+    });
+</script>
+{% endblock %}

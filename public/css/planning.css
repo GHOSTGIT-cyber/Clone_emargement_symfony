@@ -1,0 +1,233 @@
+/* planning.css - Starter style pour la page planning */
+.planning-container {
+    background: #f6f6f6;
+    min-height: 100vh;
+    padding: 30px 0 0 0;
+}
+.planning-header {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 14px 30px;
+    border-bottom: 2px solid #ececec;
+    justify-content: flex-start;
+    gap: 24px;
+}
+.avatar-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #e85c33;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+.planning-logo {
+    height: 36px;
+    margin: 0 20px;
+}
+.planning-nav {
+    display: flex;
+    gap: 25px;
+    margin-left: auto;
+}
+.nav-link {
+    font-size: 17px;
+    font-weight: 500;
+    color: #222;
+    text-decoration: none;
+    padding: 8px 8px;
+    border-radius: 5px;
+}
+.nav-link.active,
+.nav-link:hover {
+    color: #e85c33;
+    background: #f9e7e1;
+}
+
+.planning-main {
+    margin: 0 auto;
+    max-width: 980px;
+    background: #f6f6f6;
+    padding: 28px 18px 24px 18px;
+}
+
+.fc-toolbar {
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+}
+
+.fc-button {
+    background: #e85c33 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 7px !important;
+    font-weight: bold;
+    margin: 0 2px;
+    transition: background 0.18s;
+}
+.fc-button:hover {
+    background: #cf481e !important;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.2em;
+    color: #222;
+    font-weight: bold;
+}
+
+.fc-daygrid-day.fc-day-today {
+    background: #ffe5d6;
+}
+.fc-event {
+    background: #e85c33 !important;
+    border: 1px solid #e85c33 !important;
+    border-radius: 7px;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 2px 4px;
+}
+
+.fc-daygrid-day-number {
+    color: #222;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.fc-daygrid-event-dot {
+    display: none; /* On cache le point par défaut de FullCalendar */
+}
+
+/* Responsive mobile */
+@media (max-width: 600px) {
+    .planning-main {
+        padding: 7px 2px;
+    }
+    .planning-header {
+        flex-direction: column;
+        gap: 7px;
+        padding: 7px 5px;
+    }
+    .planning-logo { height: 25px; }
+    .avatar-circle { width: 30px; height: 30px; font-size: 14px; }
+}
+/* ----- STYLE MODERNE POUR PLANNING FULLCALENDAR ----- */
+
+/* Centrage et max largeur du calendrier */
+.planning-main {
+    margin: 0 auto;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    padding: 28px 10px 28px 10px;
+}
+
+/* FullCalendar général */
+.fc {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 2px;
+}
+
+/* En-tête du calendrier (titre, boutons) */
+.fc-header-toolbar {
+    margin-bottom: 14px !important;
+    background: #fff;
+    border-radius: 8px;
+    padding: 7px 5px 7px 5px;
+}
+
+.fc-toolbar-title {
+    font-size: 1.35em;
+    color: #e85c33;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Boutons de navigation */
+.fc-button {
+    background: #e85c33 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: bold;
+    font-size: 14px !important;
+    margin: 0 2px;
+    padding: 7px 15px !important;
+    transition: background 0.16s;
+    box-shadow: 0 2px 6px rgba(232,92,51,0.14);
+}
+.fc-button:hover {
+    background: #cf481e !important;
+}
+
+/* Event (cours) dans le calendrier */
+.fc-event {
+    background: #e85c33 !important;
+    border: 1.5px solid #e85c33 !important;
+    border-radius: 10px !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 2px 6px rgba(232,92,51,0.13);
+    padding: 3px 6px !important;
+    transition: transform 0.12s;
+}
+.fc-event:hover {
+    transform: scale(1.07);
+    background: #cf481e !important;
+    border-color: #cf481e !important;
+}
+
+/* Aujourd'hui bien marqué */
+.fc-day-today {
+    background: #ffe5d6 !important;
+}
+
+.fc-daygrid-day-number {
+    color: #222;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+/* On retire le point de couleur par défaut des events */
+.fc-daygrid-event-dot {
+    display: none;
+}
+
+/* Responsive mobile */
+@media (max-width: 700px) {
+    .planning-main {
+        max-width: 99vw;
+        border-radius: 5vw;
+        padding: 10px 2px 12px 2px;
+    }
+    .fc {
+        border-radius: 6px;
+        padding: 2vw 1vw;
+    }
+    .fc-toolbar-title {
+        font-size: 1.05em;
+    }
+}
+/* --- Centrage des boutons FullCalendar --- */
+.fc-header-toolbar {
+    justify-content: center !important;
+    text-align: center;
+    gap: 12px;
+}
+.fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}

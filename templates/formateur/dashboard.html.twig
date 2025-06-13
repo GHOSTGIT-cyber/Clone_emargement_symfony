@@ -1,0 +1,103 @@
+{# templates/formateur/dashboard.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Page formateur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/formateur.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="page-fiche-presence">
+    <div class="page-formateur">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <span><div class="user-initials-placeholder">
+                {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+                         </div>
+                    </span>
+                </div>
+            </div>
+            <div class="logo">
+                <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR">
+            </div>
+        </div>
+        <div class="logout-container">
+            <form action="{{ path('app_logout') }}" method="post">
+                <button type="submit" class="logout-btn">Déconnexion</button>
+            </form>
+        </div>
+        <a href="{{ path('app_logout') }}">Déconnexion</a>
+        
+        <div class="navigation">
+            <a class="nav-item">Sessions</a>
+            <a class="nav-item" href="{{ path('mon_planning') }}">Mon planning</a>
+            <a class="nav-item"href="{{ path('formateur_historique')}}">Historiques</a>
+        </div>
+        
+        
+        <div class="content">
+            <div class="day-section">
+                <h2>Aujourd'hui - Après-midi</h2>
+                
+                {% for cours in cours_aujourdhui %}
+                    <a href="{{ path('formateur_fiche_presence', {id: cours.id}) }}" class="cours-card">
+                    
+                        <div class="cours-header">
+                            <div class="cours-title">{{ cours.titre }}</div>
+                            <div class="cours-badge">{{ cours.badge }}</div>
+                        </div>
+                        <div class="cours-details">
+                            <div class="cours-info">
+                                <div class="cours-horaire">{{ cours.horaire }}</div>
+                                <div class="cours-date">{{ cours.date }}</div>
+                            </div>
+                            <div class="cours-meta">
+                                <div class="cours-apprenants">{{ cours.apprenants }} apprenants</div>
+                                <div class="cours-salle">{{ cours.salle }}</div>
+                            </div>
+                        </div>
+                        <div class="cours-signatures">
+                            {{ cours.signatures_obtenues }}/{{ cours.signatures_total }} Signatures
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            
+            <div class="day-section">
+               <h2>Autres jours ({{ cours_autres_jours|length }})</h2>
+                
+                {% for cours in cours_autres_jours %}
+                    <a  class="cours-card">
+                        <div class="cours-header">
+                            <div class="cours-title">{{ cours.titre }}</div>
+                            <div class="cours-badge">{{ cours.badge }}</div>
+                        </div>
+                        <div class="cours-details">
+                            <div class="cours-info">
+                                <div class="cours-horaire">{{ cours.horaire }}</div>
+                                <div class="cours-date">{{ cours.date }}</div>
+                            </div>
+                            <div class="cours-meta">
+                                <div class="cours-apprenants">{{ cours.apprenants }} apprenants</div>
+                                <div class="cours-salle">{{ cours.salle }}</div>
+                            </div>
+                        </div>
+                        <div class="cours-signatures">
+                            {{ cours.signatures_obtenues }}/{{ cours.signatures_total }} Signatures
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            
+            <div class="pagination">
+                <a href="#" class="pagination-prev">&lt;</a>
+                <span class="pagination-current">1</span>
+                <a href="#" class="pagination-next">&gt;</a>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

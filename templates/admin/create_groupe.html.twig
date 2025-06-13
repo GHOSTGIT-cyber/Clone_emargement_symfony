@@ -1,0 +1,46 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Créer un groupe{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/choices-custom.css') }}">
+{% endblock %}
+
+{% block content %}
+
+        <h1>Créer un groupe</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="{{ label }}-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ form_start(form, {'attr': {'class': 'form-admin card'}}) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.apprenants) }}
+            {{ form_row(form.groupesParents) }}
+
+            <button type="submit" class="button button--primary">Créer le groupe</button>
+        {{ form_end(form) }}
+   
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.choices-select').forEach(function (select) {
+        new Choices(select, {
+            removeItemButton: true,
+            searchPlaceholderValue: 'Rechercher...',
+            noChoicesText: 'Aucun résultat'
+        });
+    });
+});
+    </script>
+{% endblock %}

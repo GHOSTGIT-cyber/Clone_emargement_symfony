@@ -1,0 +1,83 @@
+<nav class="sidebar">
+    <div class="user-profile-dropdown">
+    <div class="user-profile" onclick="toggleUserMenu()">
+        {% if app.user.profilePicture %}
+            <img src="{{ asset(app.user.profilePicture) }}" alt="Photo de l'utilisateur" class="user-photo">
+        {% else %}
+            <div class="user-initials-placeholder">
+                {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="user-menu" class="user-menu hidden">
+        <a href="{{ path('admin_profil') }}">
+            <i class="fas fa-user icon"></i> Mon profil
+        </a>
+        <a href="{{ path('app_logout') }}">
+            <i class="fas fa-arrow-right-from-bracket icon"></i> Quitter
+        </a>
+    </div>
+</div>
+    
+    <hr class="sidebar-divider">
+
+    <ul class="menu-top">
+        <li>
+            <a href="{{ path('admin_dashboard') }}" class="{% if app.request.attributes.get('_route') == 'admin_dashboard' %}active{% endif %}">
+                     <i class="fas fa-chart-line icon"></i>
+            Tableau de bord
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('admin_formations') }}" class="{% if app.request.attributes.get('_route') == 'admin_formations' %}active{% endif %}">
+                <i class="fas fa-graduation-cap icon"></i>
+                Formations 
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('admin_sessions') }}" class="{% if app.request.attributes.get('_route') == 'admin_sessions' %}active{% endif %}">
+                <i class="fas fa-clipboard-list icon"></i>
+                Sessions
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('admin_contacts') }}" class="{% if app.request.attributes.get('_route') == 'admin_contacts' %}active{% endif %}">
+                <i class="fas fa-address-book icon"></i>
+                Contacts
+            </a>
+        </li>
+    </ul>
+
+    <hr class="sidebar-divider">
+
+     <ul class="menu-bottom">
+        <li>
+            <a href="{{ path('admin_parametres') }}" class="{% if app.request.attributes.get('_route') == 'admin_parametres' %}active{% endif %}">
+                <i class="fas fa-gear icon"></i>
+                Paramètres
+            </a>
+        </li>
+    </ul>
+
+    <div class="image">
+        <img id="gefor" src="{{ asset('images/gefor.jpg') }}" alt="Logo Gefor">
+    </div>
+</nav>
+
+<script>
+    function toggleUserMenu() {
+        const menu = document.getElementById('user-menu');
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.user-profile-dropdown');
+        if (!dropdown.contains(event.target)) {
+            document.getElementById('user-menu').classList.add('hidden');
+        }
+    });
+</script>
