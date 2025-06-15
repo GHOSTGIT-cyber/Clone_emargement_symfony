@@ -206,6 +206,17 @@
     width: 100%;
 }
 
+.select-filtre{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espace entre label et select */
+    
+}
+
+.select-filtre select {
+    min-width: 200px;  /* Prend toute la largeur disponible */
+}
+
 .admin-table {
     width: 100%;
     border-collapse: collapse;
@@ -320,4 +331,35 @@ td {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.modal {
+    display: none; /* CACHÉ PAR DÉFAUT */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.modal .close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
 }

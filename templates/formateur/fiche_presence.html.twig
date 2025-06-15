@@ -1,17 +1,322 @@
+{# 
+ * templates/formateur/fiche_presence.html.twig - VERSION MODERNISÉE
+ * Style harmonisé avec le nouveau dashboard
+ * JS externe pour plus de lisibilité
+ * CONSERVE TOUTE LA LOGIQUE EXISTANTE
+ #}
 {% extends 'base.html.twig' %}
 
-
-{% block title %}Signature des apprenants{% endblock %}
+{% block title %}Fiche de présence - {{ session.titre }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/signature.css') }}">
-    
+    {# CSS séparé et modernisé #}
+    <link rel="stylesheet" href="{{ asset('css/formateur/fiche_presence_moderne.css') }}">
+    {# Librairie SignaturePad pour les signatures #}
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    {# Font Awesome pour les icônes #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block body %}
+<div class="fiche-presence-container">
+    
+    {# === MESSAGES FLASH === #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">
+                <i class="fas fa-{{ label == 'success' ? 'check-circle' : 'exclamation-triangle' }}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
-    <!-- Popup de signature avec Signature Pad -->
+    {# === HEADER MODERNE === #}
+    <div class="fiche-header">
+        <div class="header-left">
+            <div class="formateur-avatar">
+                {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+            </div>
+            <div class="session-info">
+                <h1>{{ session.titre }}</h1>
+                <p class="session-meta">
+                    <i class="fas fa-calendar"></i> {{ session.date }} 
+                    <i class="fas fa-clock"></i> {{ session.horaire }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR" class="logo">
+        </div>
+        
+        <div class="header-right">
+            <div class="signatures-counter">
+                <div class="counter-label">Signatures obtenues</div>
+                <div class="counter-value">{{ session.signatures_obtenues }}/{{ session.signatures_total }}</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ (session.signatures_obtenues / session.signatures_total * 100)|default(0) }}%"></div>
+                </div>
+            </div>
+            
+            {# BOUTON DÉCONNEXION UNIQUE #}
+            <form action="{{ path('app_logout') }}" method="post" class="logout-form">
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Déconnexion
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {# === SECTION PRINCIPALE === #}
+    <div class="main-content">
+        
+        {# === FORMULAIRE D'ACTIVATION SESSION === #}
+        <div class="activation-section">
+            <h2>
+                <i class="fas fa-paper-plane"></i>
+                Activation de la session pour signature
+            </h2>
+            <p class="section-description">
+                Sélectionnez les apprenants et activez la session pour qu'ils puissent signer électroniquement.
+            </p>
+            
+            {# FORMULAIRE EXISTANT - CONSERVE LA LOGIQUE #}
+            <form action="{{ path('formateur_envoyer_email_signature', {'id': app.request.get('id')}) }}" method="post" class="activation-form">
+                <button type="submit" class="activation-btn">
+                    <i class="fas fa-envelope"></i>
+                    Activer la session et envoyer les notifications
+                </button>
+                
+                {# === TABLEAU DES APPRENANTS MODERNISÉ === #}
+                <div class="apprenants-table-container">
+                    <table class="apprenants-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-col">
+                                    <input type="checkbox" id="select-all" title="Sélectionner tous">
+                                </th>
+                                <th class="student-col">Apprenant</th>
+                                <th class="status-col">Statut</th>
+                                <th class="time-col">Heure signature</th>
+                                <th class="comment-col">Commentaire</th>
+                                <th class="retard-col">Motif retard</th>
+                                <th class="absence-col">Absence justifiée</th>
+                                <th class="anticipation-col">Départ anticipé</th>
+                                <th class="actions-col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {# BOUCLE SUR LES APPRENANTS - CONSERVE LA LOGIQUE EXISTANTE #}
+                            {% for apprenant in apprenants %}
+                                {% set signature = null %}
+                                {# Recherche de la signature de cet apprenant #}
+                                {% for sig in signatures %}
+                                    {% if sig.user.id == apprenant.id %}
+                                        {% set signature = sig %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                <tr class="student-row" data-student-id="{{ apprenant.id }}">
+                                    {# CHECKBOX POUR ACTIVATION #}
+                                    <td class="checkbox-col">
+                                        <input type="checkbox" name="apprenants[]" value="{{ apprenant.id }}" class="student-checkbox">
+                                    </td>
+                                    
+                                    {# INFORMATIONS ÉTUDIANT #}
+                                    <td class="student-col">
+                                        <div class="student-info">
+                                            <div class="student-avatar">
+                                                {{ apprenant.firstname|slice(0, 1)|upper }}{{ apprenant.lastname|slice(0, 1)|upper }}
+                                            </div>
+                                            <div class="student-details">
+                                                <div class="student-name">{{ apprenant.firstname }} {{ apprenant.lastname }}</div>
+                                                <div class="student-email">{{ apprenant.email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    {# STATUT AVEC INDICATEURS VISUELS #}
+                                    <td class="status-col">
+                                        {% if signature %}
+                                            {% if signature.statut == 'présent' %}
+                                                <span class="status-badge status-present">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Présent
+                                                </span>
+                                            {% elseif signature.statut == 'retard' %}
+                                                <span class="status-badge status-late">
+                                                    <i class="fas fa-clock"></i>
+                                                    En retard
+                                                </span>
+                                            {% elseif signature.statut == 'absent' %}
+                                                {% if signature.justifie %}
+                                                    <span class="status-badge status-justified">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                        Absence justifiée
+                                                    </span>
+                                                {% else %}
+                                                    <span class="status-badge status-absent">
+                                                        <i class="fas fa-times-circle"></i>
+                                                        Absent
+                                                    </span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="status-badge status-pending">
+                                                    <i class="fas fa-hourglass-half"></i>
+                                                    En attente
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="status-badge status-pending">
+                                                <i class="fas fa-hourglass-half"></i>
+                                                En attente
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# HEURE DE SIGNATURE #}
+                                    <td class="time-col">
+                                        {% if signature and signature.heureSignature %}
+                                            <span class="signature-time">
+                                                <i class="fas fa-clock"></i>
+                                                {{ signature.heureSignature|date('H:i') }}
+                                            </span>
+                                        {% else %}
+                                            <span class="no-signature">—</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# COMMENTAIRE #}
+                                    <td class="comment-col">
+                                        {% if signature and signature.commentaire %}
+                                            <div class="comment-preview" title="{{ signature.commentaire }}">
+                                                <i class="fas fa-comment-alt"></i>
+                                                {{ signature.commentaire|slice(0, 30) }}{% if signature.commentaire|length > 30 %}...{% endif %}
+                                            </div>
+                                        {% else %}
+                                            <span class="no-comment">—</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# MOTIF RETARD #}
+                                    <td class="retard-col">
+                                        {% if signature and signature.motifRetard %}
+                                            <div class="retard-motif" title="{{ signature.motifRetard }}">
+                                                <i class="fas fa-info-circle"></i>
+                                                {{ signature.motifRetard|slice(0, 25) }}{% if signature.motifRetard|length > 25 %}...{% endif %}
+                                            </div>
+                                        {% else %}
+                                            <span class="no-motif">—</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# ABSENCE JUSTIFIÉE #}
+                                    <td class="absence-col">
+                                        {% if signature and signature.motifAbsence %}
+                                            <div class="absence-motif" title="{{ signature.motifAbsence }}">
+                                                <i class="fas fa-file-alt"></i>
+                                                {{ signature.motifAbsence|slice(0, 20) }}{% if signature.motifAbsence|length > 20 %}...{% endif %}
+                                            </div>
+                                        {% else %}
+                                            <span class="no-absence">—</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# DÉPART ANTICIPÉ (NOUVELLE COLONNE) #}
+                                    <td class="anticipation-col">
+                                        {% if signature and signature.motifDetails %}
+                                            <div class="anticipation-motif" title="{{ signature.motifDetails }}">
+                                                <i class="fas fa-running"></i>
+                                                {{ signature.motifDetails|slice(0, 20) }}{% if signature.motifDetails|length > 20 %}...{% endif %}
+                                            </div>
+                                        {% else %}
+                                            <span class="no-anticipation">—</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    {# MENU ACTIONS MODERNISÉ - STYLE ORIGINAL #}
+                                    <td class="actions-col">
+                                        <div class="actions">
+                                            <button type="button" class="action-btn" 
+                                                    data-student-name="{{ apprenant.firstname }} {{ apprenant.lastname }}"
+                                                    aria-label="Actions pour {{ apprenant.firstname }} {{ apprenant.lastname }}">
+                                                <span class="more-icon"></span>
+                                            </button>
+                                            
+                                            {# MENU DÉROULANT - STYLE ORIGINAL #}
+                                            <div class="dropdown-menu">
+                                                <ul>
+                                                    {# SIGNATURE MANUELLE #}
+                                                    <li>
+                                                        <span class="icon sign-icon"></span>
+                                                        <button type="button" class="sign-manual" 
+                                                                data-signature-id="{{ signature ? signature.id : '' }}"
+                                                                data-student-name="{{ apprenant.firstname }} {{ apprenant.lastname }}">
+                                                            Faire signer manuellement
+                                                        </button>
+                                                    </li>
+                                                    
+                                                    {# MARQUER EN RETARD #}
+                                                    <li>
+                                                        <span class="icon late-icon"></span>
+                                                        <button type="button" class="mark-late" 
+                                                                data-signature-id="{{ signature ? signature.id : '' }}"
+                                                                data-session-id="{{ session.id }}">
+                                                            Marquer en retard
+                                                        </button>
+                                                    </li>
+                                                    
+                                                    {# AJOUTER COMMENTAIRE #}
+                                                    <li>
+                                                        <span class="icon comment-icon"></span>
+                                                        <button type="button" class="add-comment" 
+                                                                data-signature-id="{{ signature ? signature.id : '' }}">
+                                                            Ajouter commentaire
+                                                        </button>
+                                                    </li>
+                                                    
+                                                    {# ABSENCE JUSTIFIÉE #}
+                                                    <li>
+                                                        <span class="icon absence-icon"></span>
+                                                        <form method="post" action="{{ path('signature_session_justified', {'id': signature ? signature.id : 0}) }}" style="display: inline;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('justified_signature_' ~ (signature ? signature.id : 0)) }}">
+                                                            <input type="hidden" name="session_id" value="{{ session.id }}">
+                                                            <button type="submit" onclick="return confirm('Marquer cette absence comme justifiée ?')">
+                                                                Absence justifiée
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    
+                                                    {# EFFACER SIGNATURE #}
+                                                    {% if signature and signature.signatureData %}
+                                                    <li>
+                                                        <span class="icon send-icon"></span>
+                                                        <form method="post" action="{{ path('signature_session_delete', {'id': signature.id}) }}" style="display: inline;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_signature_' ~ signature.id) }}">
+                                                            <input type="hidden" name="session_id" value="{{ session.id }}">
+                                                            <button type="submit" onclick="return confirm('Effacer cette signature ?')">
+                                                                Effacer signature
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# === POPUP SIGNATURE (CONSERVE LE STYLE EXISTANT) === #}
 <div id="signature-popup" class="signature-popup {% if not formateur_a_deja_signe %}active{% endif %}">
     <div class="signature-modal">
         <h2>Signature du formateur</h2>
@@ -19,560 +324,129 @@
             Veuillez signer ci-dessous pour accéder à la fiche de présence
         </p>
         
-        <!-- Canvas pour Signature Pad -->
         <div class="signature-container">
             <canvas id="signature-canvas" class="signature-canvas" width="500" height="200"></canvas>
         </div>
         
         <div class="signature-buttons">
             <button type="button" id="btn-retour" class="btn-signature btn-retour">
-                ← Retour
+                <i class="fas fa-times"></i>
+                Annuler
             </button>
             <button type="button" id="btn-effacer" class="btn-signature btn-effacer">
+                <i class="fas fa-eraser"></i>
                 Effacer
             </button>
             <button type="button" id="btn-valider" class="btn-signature btn-valider">
+                <i class="fas fa-check"></i>
                 Valider la signature
-            </button>
-            <button type="button" id="btn-bypass" class="btn-signature btn-bypass">
-                🔧 Mode Test - Bypasser
             </button>
         </div>
     </div>
 </div>
-
-
-    <!-- Contenu principal de la fiche de présence -->
-    <div class="page-fiche-presence">
-    <div class="main-container">
-    
-        <!-- Votre contenu existant de fiche de présence -->
-        <div class="sidebar">
-            <div class="profile-icon">
-                <div class="circle">
-                    <span>
-                        {% if formateur.firstname is defined %}{{ formateur.firstname|first|upper }}{% endif %}
-                        {% if formateur.lastname is defined %}{{ formateur.lastname|first|upper }}{% endif %}
-                    </span>
-                </div>
-            </div>
-            <div class="logout-container">
-                <form action="{{ path('app_logout') }}" method="post">
-                    <button type="submit" class="logout-btn">Déconnexion</button>
-                </form>
-            </div>
-            <a href="{{ path('app_logout') }}">Déconnexion</a>
-    
-            <div class="menu-items">
-                <a href="#" class="menu-item">
-                    <i class="menu-icon email-icon"></i>
-                    <span>Email</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="menu-icon qr-icon"></i>
-                    <span>QR code</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="header">
-                <div class="course-info">
-                    <h1>{{ session.titre }}</h1>
-                    <h2>{{ session.date }} - {{ session.horaire }}</h2>
-                </div>
-                
-                <div class="logo">
-                    <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR">
-                </div>
-                
-                <div class="signature-count">
-                    <h3>Nombre de signature</h3>
-                    <p>{{ session.signatures_obtenues }}/{{ session.signatures_total }}</p>
-                </div>
-            </div>
-
-            <div class="main-content">
-                <h2>Sélectionnez les apprenants présents et envoyez un email de signature</h2>
-                
-                <form action="{{ path('formateur_envoyer_email_signature', {'id': app.request.get('id')}) }}" method="post">
-                    <!-- Votre contenu existant du tableau -->
-                    <div class="attendees-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="checkbox-column">
-                                        <input type="checkbox" id="select-all">
-                                    </th>
-                                    <th>Nom</th>
-                                    <th>Email</th>
-                                    <th>État</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for signature in signatures %}
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="apprenants[]" value="{{ signature.user.id }}" class="student-checkbox"
-                                                {% if signature.statut == 'présent' and signature.heureSignature %}checked{% endif %}>
-                                        </td>
-                                        <td>{{ signature.user.lastname }} {{ signature.user.firstname }}</td>
-                                        <td>{{ signature.user.email }}</td>
-                                        <td class="status">
-                                            {% if signature.getStatut() == 'présent' and signature.heureSignature is not null and signature.signatureData is not null %}
-                                                <span class="present">Présent</span>
-                                            {% elseif signature.getStatut() == 'absent' and signature.isJustifie() %}
-                                                <span class="justified">Absence justifiée</span>
-                                            {% elseif signature.getStatut() == 'absent' %}
-                                                <span class="absent">Absent</span>
-                                            {% else %}
-                                                <span class="undefined">Non défini</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="actions">
-                                            <button type="button" class="action-btn">
-                                                <i class="more-icon"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <ul>
-                                                    <!-- Faire signer manuellement -->
-                                                    <li>
-                                                        <button type="button"
-                                                                class="dropdown-action sign-manual"
-                                                                data-signature-id="{{ signature.getId() }}"
-                                                                data-session-id="{{ session.id }}">
-                                                            <i class="icon sign-icon"></i> Faire signer manuellement
-                                                        </button>
-                                                    </li>
-                                                    <!-- Effacer la signature -->
-                                                    <li>
-                                                        <form method="post"
-                                                            action="{{ path('signature_session_delete', {id: signature.getId()}) }}"
-                                                            style="display:inline;" onsubmit="return confirm('Effacer la signature ?');">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_signature_' ~ signature.getId()) }}">
-                                                            <input type="hidden" name="session_id" value="{{ session.id }}">
-                                                            <button type="submit" class="dropdown-action delete-signature" style="background:none;border:none;padding:0;color:#c00;cursor:pointer;">
-                                                                Effacer la signature
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                    <!-- Absence justifiée -->
-                                                    <li>
-                                                        <form method="post"
-                                                            action="{{ path('signature_session_justified', {id: signature.getId()}) }}"
-                                                            style="display:inline;" onsubmit="return confirm('Marquer comme absence justifiée ?');">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token('justified_signature_' ~ signature.getId()) }}">
-                                                            <input type="hidden" name="session_id" value="{{ session.id }}">
-                                                            <button type="submit" class="dropdown-action mark-justified" style="background:none;border:none;padding:0;color:#FFA500;cursor:pointer;">
-                                                                <i class="icon absence-icon"></i> Absence justifiée
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                    <!-- Retard (ouvre un popup JS) -->
-                                                    <li>
-                                                        <button type="button"
-                                                                class="dropdown-action mark-late"
-                                                                data-signature-id="{{ signature.getId() }}"
-                                                                data-session-id="{{ session.id }}">
-                                                            <i class="icon late-icon"></i> Retard
-                                                        </button>
-                                                    </li>
-                                                    <!-- Ajouter un commentaire (ouvre un popup JS) -->
-                                                    <li>
-                                                        <button type="button"
-                                                                class="dropdown-action add-comment"
-                                                                data-signature-id="{{ signature.getId() }}"
-                                                                data-session-id="{{ session.id }}">
-                                                            <i class="icon comment-icon"></i> Écrire un commentaire
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="5" class="no-data">Aucun apprenant inscrit à cette session</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-
-                        </table>
-                    </div>
-                    
-                    <div class="action-button">
-                        <button type="submit" class="send-email-btn">Envoyez un email de signature aux apprenants</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <!-- On inclut la librairie SignaturePad via CDN, ce qui permet de gérer le canvas de signature simplement -->
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    {# DÉFINITION DES ROUTES POUR LE JAVASCRIPT #}
     <script>
-    // On attend que le DOM soit prêt pour éviter les erreurs de sélection d'éléments
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // 1. --------- INITIALISATION DE SIGNATUREPAD ----------
-                        // Vérification que la librairie SignaturePad est bien chargée
-                        if (typeof SignaturePad === 'undefined') {
-                            console.error('[Signature] SignaturePad non trouvé. Vérifiez que la bibliothèque est chargée.');
-                            return;
-                        }
-
-                        // Récupération de tous les éléments utiles du DOM pour manipuler le pop-up et les boutons
-                        const canvas     = document.getElementById('signature-canvas');      // Zone de dessin
-                        const popup      = document.getElementById('signature-popup');       // Pop-up global
-                        const btnEffacer = document.getElementById('btn-effacer');           // Bouton Effacer
-                        const btnValider = document.getElementById('btn-valider');           // Bouton Valider
-                        const btnRetour  = document.getElementById('btn-retour');            // Bouton Retour
-                        const btnBypass  = document.getElementById('btn-bypass');            // Bouton Bypass (mode test)
-
-                        // Si le canvas n'est pas trouvé, on arrête tout pour éviter des erreurs plus loin
-                        if (!canvas) {
-                            console.error('[Signature] Canvas de signature non trouvé');
-                            return;
-                        }
-
-                        // Création de l'objet SignaturePad, qui permet de dessiner dans le canvas
-                        const signaturePad = new SignaturePad(canvas, {
-                            backgroundColor: 'rgba(255,255,255,1)', // Fond blanc pour éviter l'effet transparent sur l'export
-                            penColor: 'rgb(0,0,0)',                 // Stylo noir
-                            minWidth: 2,                            // Largeur minimum du trait
-                            maxWidth: 4,                            // Largeur maximum du trait
-                            throttle: 16,                           // Pour fluidifier le dessin
-                            minDistance: 5,                         // Réduit le nombre de points stockés pour améliorer les perfs
-                        });
-
-                        // --------- AJUSTEMENT AUTOMATIQUE DU CANVAS ----------
-                        // Fonction pour adapter la taille du canvas en fonction de la taille de l'écran et du ratio de pixel (pour les écrans Retina)
-                        function resizeCanvas() {
-                            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                            canvas.width = canvas.offsetWidth * ratio;
-                            canvas.height = canvas.offsetHeight * ratio;
-                            canvas.getContext('2d').scale(ratio, ratio);
-                            signaturePad.clear(); // On efface la signature après chaque resize pour éviter des décalages d'affichage
-                        }
-                        // Exécution au chargement et lors des redimensionnements de fenêtre
-                        resizeCanvas();
-                        window.addEventListener('resize', resizeCanvas);
-
-                        // 2. --------- GESTION DES BOUTONS DU POP-UP ----------
-
-                        // --- Bouton "Effacer" : vide le canvas sans fermer le pop-up
-                        if (btnEffacer) {
-                            btnEffacer.addEventListener('click', function() {
-                                signaturePad.clear();
-                                console.log('[Signature] La signature a été effacée');
-                            });
-                        }
-
-                        // --- Bouton "Retour" : demande une confirmation, puis redirige vers la page planning si oui
-                        if (btnRetour) {
-                            btnRetour.addEventListener('click', function() {
-                                if (confirm('Êtes-vous sûr de vouloir fermer sans signer ?')) {
-                                    window.location.href = '{{ path('formateur_dashboard') }}';
-                                }
-                            });
-                        }
-
-                        // --- Bouton "Valider la signature" : envoie la signature au backend en AJAX (fetch)
-                        if (btnValider) {
-                            btnValider.addEventListener('click', function() {
-                                // Vérifie si la signature est vide (pas de dessin)
-                                if (signaturePad.isEmpty()) {
-                                    alert('Veuillez signer avant de valider.');
-                                    return;
-                                }
-
-                                // Récupère l'image signée sous forme de chaîne base64 (format PNG)
-                                const signatureData = signaturePad.toDataURL('image/png');
-                                // Pour les démos, on affiche le début de la chaîne base64 dans la console
-                                console.log('[Signature] Signature capturée (début base64) :', signatureData.slice(0, 50) + '...');
-
-                                // Empêche l'utilisateur de cliquer plusieurs fois pendant l'envoi
-                                btnValider.disabled = true;
-                                btnValider.textContent = 'Sauvegarde...';
-
-                                // Requête POST AJAX vers le serveur Symfony (route gérée par FormateurFichePresenceController)
-                                fetch('{{ path('formateur_sauvegarder_signature', {'id': app.request.get('id')}) }}', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                    body: 'signature_data=' + encodeURIComponent(signatureData)
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    // Si le backend renvoie {success:true}, on ferme le pop-up et on recharge la page
-                                    if (data.success) {
-                                        popup.classList.remove('active');
-                                        window.location.reload();
-                                    } else {
-                                        // Sinon on affiche un message d'erreur
-                                        alert('Erreur: ' + data.message);
-                                        btnValider.disabled = false;
-                                        btnValider.textContent = 'Valider la signature';
-                                    }
-                                })
-                                .catch(error => {
-                                    // Gestion d'erreur réseau ou backend
-                                    console.error('[Signature] Erreur lors de la sauvegarde', error);
-                                    alert('Erreur lors de la sauvegarde.');
-                                    btnValider.disabled = false;
-                                    btnValider.textContent = 'Valider la signature';
-                                });
-                            });
-                        }
-
-                        // --- Bouton "Bypass" : mode test pour passer la signature (à désactiver en prod)
-                        if (btnBypass) {
-                            btnBypass.addEventListener('click', function() {
-                                if (confirm('Mode TEST : Bypasser la signature ?')) {
-                                    btnBypass.disabled = true;
-                                    btnBypass.textContent = 'Bypass...';
-                                    fetch('{{ path('formateur_bypass_signature', {'id': app.request.get('id')}) }}', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' }
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            popup.classList.remove('active');
-                                            window.location.reload();
-                                        } else {
-                                            alert('Erreur bypass: ' + data.message);
-                                            btnBypass.disabled = false;
-                                            btnBypass.textContent = '🔧 Mode Test - Bypasser';
-                                        }
-                                    })
-                                    .catch(error => {
-                                        btnBypass.disabled = false;
-                                        btnBypass.textContent = '🔧 Mode Test - Bypasser';
-                                    });
-                                }
-                            });
-                        }
-
-                        // 3. --------- FONCTIONS SUPPLÉMENTAIRES POUR LA PAGE (dropdowns, checkboxes, etc.) ----------
-
-                        // --- Gestion du menu déroulant sur chaque apprenant (dropdown)
-                        const actionButtons = document.querySelectorAll('.action-btn');
-                        // Ajout d'un style rapide pour éviter les conflits de z-index
-                        const style = document.createElement('style');
-                        style.textContent = `
-                            .dropdown-menu { position: absolute; z-index: 1050; }
-                            .actions { position: relative; }
-                            .dropdown-menu.active { display: block; }
-                        `;
-                        document.head.appendChild(style);
-
-                        // Pour chaque bouton action, on gère l'ouverture/fermeture du menu déroulant
-                        actionButtons.forEach(button => {
-                            button.addEventListener('click', function(e) {
-                                e.stopPropagation(); // Empêche la fermeture directe
-                                // Ferme tous les autres menus
-                                document.querySelectorAll('.dropdown-menu.active').forEach(menu => {
-                                    menu.classList.remove('active');
-                                });
-                                // Ouvre/ferme le menu associé au bouton cliqué
-                                const dropdownMenu = this.parentElement.querySelector('.dropdown-menu');
-                                if (dropdownMenu) {
-                                    dropdownMenu.classList.toggle('active');
-                                }
-                            });
-                        });
-
-                        // Ferme tous les menus déroulants si on clique ailleurs sur la page
-                        document.addEventListener('click', function() {
-                            document.querySelectorAll('.dropdown-menu.active').forEach(menu => {
-                                menu.classList.remove('active');
-                            });
-                        });
-
-                        // --- Gestion de la case à cocher "Tout sélectionner"
-                        const selectAllCheckbox = document.getElementById('select-all');
-                        const studentCheckboxes = document.querySelectorAll('.student-checkbox');
-                        // Coche/décoche tous les apprenants si "Tout sélectionner" est coché/décoché
-                        if (selectAllCheckbox) {
-                            selectAllCheckbox.addEventListener('change', function() {
-                                studentCheckboxes.forEach(checkbox => {
-                                    checkbox.checked = selectAllCheckbox.checked;
-                                });
-                            });
-                        }
-
-                        // ---------- 4. SIGNATURE MANUELLE POUR APPRENANT ----------
-                        // Variable pour stocker le contexte de signature (formateur ou apprenant)
-                        let signatureContext = 'formateur';
-                        let currentSignatureId = null;
-
-                        // Cible tous les boutons "Faire signer manuellement"
-                        document.querySelectorAll('.sign-manual').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                // On récupère l'ID de la signature à modifier (SignatureSession)
-                                const signatureId = btn.getAttribute('data-signature-id');
-                                
-                                // On change le contexte pour la signature d'apprenant
-                                signatureContext = 'apprenant';
-                                currentSignatureId = signatureId;
-                                
-                                // Vide le canvas et affiche le pop-up
-                                signaturePad.clear();
-                                popup.classList.add('active');
-                                
-                                // Change le titre du pop-up pour indiquer qu'on signe pour un apprenant
-                                const popupTitle = popup.querySelector('h2');
-                                if (popupTitle) {
-                                    popupTitle.textContent = 'Signature manuelle de l\'apprenant';
-                                }
-                            });
-                        });
-
-                        // Modification du bouton valider pour gérer les deux contextes
-                        if (btnValider) {
-                            // On stocke la fonction originale
-                            const originalValidateHandler = btnValider.onclick;
-                            
-                            btnValider.onclick = function() {
-                                if (signaturePad.isEmpty()) {
-                                    alert('Veuillez signer avant de valider.');
-                                    return;
-                                }
-
-                                const signatureData = signaturePad.toDataURL('image/png');
-                                btnValider.disabled = true;
-                                btnValider.textContent = 'Sauvegarde...';
-
-                                // Choisit la route selon le contexte
-                                let fetchUrl;
-                                if (signatureContext === 'apprenant' && currentSignatureId) {
-                                    // Route pour signature manuelle d'apprenant
-                                    fetchUrl = '{{ path('apprenant_signature_manual_sign', {'id': 'SIGNATURE_ID'}) }}'.replace('SIGNATURE_ID', currentSignatureId);
-                                } else {
-                                    // Route pour signature du formateur
-                                    fetchUrl = '{{ path('formateur_sauvegarder_signature', {'id': app.request.get('id')}) }}';
-                                }
-
-                                fetch(fetchUrl, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                    body: 'signature_data=' + encodeURIComponent(signatureData)
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        popup.classList.remove('active');
-                                        // Remet le contexte par défaut
-                                        signatureContext = 'formateur';
-                                        currentSignatureId = null;
-                                        // Remet le titre original
-                                        const popupTitle = popup.querySelector('h2');
-                                        if (popupTitle) {
-                                            popupTitle.textContent = 'Signature du formateur';
-                                        }
-                                        window.location.reload();
-                                    } else {
-                                        alert('Erreur: ' + data.message);
-                                        btnValider.disabled = false;
-                                        btnValider.textContent = 'Valider la signature';
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('[Signature] Erreur lors de la sauvegarde', error);
-                                    alert('Erreur lors de la sauvegarde.');
-                                    btnValider.disabled = false;
-                                    btnValider.textContent = 'Valider la signature';
-                                });
-                            };
-                        }
-
-                        // ---------- 5. POPUP RETARD ----------
-                        document.querySelectorAll('.mark-late').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const signatureId = btn.getAttribute('data-signature-id');
-                                const sessionId = btn.getAttribute('data-session-id');
-                                const motif = prompt("Motif de retard :"); // Popup simple pour le motif
-                                if (motif && motif.trim() !== '') {
-                                    // Route corrigée selon le contrôleur
-                                    const fetchUrl = '{{ path('signature_session_late', {'id': 'SIGNATURE_ID'}) }}'.replace('SIGNATURE_ID', signatureId);
-                                    
-                                    fetch(fetchUrl, {
-                                        method: 'POST',
-                                        headers: { 
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        },
-                                        body: 'motif_retard=' + encodeURIComponent(motif) + '&session_id=' + encodeURIComponent(sessionId)
-                                    })
-                                    .then(response => {
-                                        if (response.ok) {
-                                            window.location.reload();
-                                        } else {
-                                            console.error('Erreur lors de l\'enregistrement du retard');
-                                            alert('Erreur lors de l\'enregistrement du retard');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Erreur réseau:', error);
-                                        alert('Erreur réseau lors de l\'enregistrement du retard');
-                                    });
-                                }
-                            });
-                        });
-
-                        // ---------- 6. POPUP COMMENTAIRE ----------
-                        document.querySelectorAll('.add-comment').forEach(btn => {
-                            btn.addEventListener('click', function() {
-                                const signatureId = btn.getAttribute('data-signature-id');
-                                const sessionId = btn.getAttribute('data-session-id');
-                                const commentaire = prompt("Saisissez un commentaire :");
-                                if (commentaire && commentaire.trim() !== '') {
-                                    // Route corrigée selon le contrôleur
-                                    const fetchUrl = '{{ path('signature_session_comment', {'id': 'SIGNATURE_ID'}) }}'.replace('SIGNATURE_ID', signatureId);
-                                    
-                                    fetch(fetchUrl, {
-                                        method: 'POST',
-                                        headers: { 
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        },
-                                        body: 'commentaire=' + encodeURIComponent(commentaire) + '&session_id=' + encodeURIComponent(sessionId)
-                                    })
-                                    .then(response => {
-                                        if (response.ok) {
-                                            window.location.reload();
-                                        } else {
-                                            console.error('Erreur lors de l\'ajout du commentaire');
-                                            alert('Erreur lors de l\'ajout du commentaire');
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Erreur réseau:', error);
-                                        alert('Erreur réseau lors de l\'ajout du commentaire');
-                                    });
-                                }
-                            });
-                        });
-
-                        // ---------- 7. GESTION FERMETURE POP-UP ----------
-                        // Quand on ferme le pop-up, on remet le contexte par défaut
-                        if (btnRetour) {
-                            btnRetour.addEventListener('click', function() {
-                                signatureContext = 'formateur';
-                                currentSignatureId = null;
-                                const popupTitle = popup.querySelector('h2');
-                                if (popupTitle) {
-                                    popupTitle.textContent = 'Signature du formateur';
-                                }
-                            });
-                        }
-                    });
-
-
-
+        // Configuration des routes utilisées par le JavaScript
+        // Ces URLs sont générées par Symfony et utilisées par les fonctions JS
+        window.routes = {
+            signatureFormateur: "{{ path('formateur_sauvegarder_signature', {'id': app.request.get('id')}) }}",
+            signatureManuelle: "{{ path('apprenant_signature_manual_sign', {'id': 'SIGNATURE_ID'}) }}",
+            marquerRetard: "{{ path('signature_session_late', {'id': 'SIGNATURE_ID'}) }}",
+            ajouterCommentaire: "{{ path('signature_session_comment', {'id': 'SIGNATURE_ID'}) }}"
+        };
+        
+        // ID de session pour certaines opérations
+        window.sessionId = {{ app.request.get('id') }};
+        
+        console.log('[Config] Routes JavaScript configurées');
     </script>
+    
+    {# SCRIPT TEST TEMPORAIRE - Pour vérifier que tout marche #}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== TEST FICHE PRÉSENCE ===');
+        
+        // Test des éléments essentiels
+        const popup = document.getElementById('signature-popup');
+        const canvas = document.getElementById('signature-canvas');
+        const btnOuvrir = document.getElementById('btn-ouvrir-signature');
+        const menusActions = document.querySelectorAll('.action-btn');
+        const boutonsRetard = document.querySelectorAll('.mark-late');
+        const boutonsCommentaire = document.querySelectorAll('.add-comment');
+        const boutonsSignature = document.querySelectorAll('.sign-manual');
+        
+        console.log('Popup signature:', !!popup);
+        console.log('Canvas signature:', !!canvas);
+        console.log('Bouton ouvrir signature:', !!btnOuvrir);
+        console.log('Menus actions:', menusActions.length);
+        console.log('Boutons retard:', boutonsRetard.length);
+        console.log('Boutons commentaire:', boutonsCommentaire.length);
+        console.log('Boutons signature manuelle:', boutonsSignature.length);
+        console.log('SignaturePad disponible:', typeof SignaturePad !== 'undefined');
+        
+        // Test ouverture popup signature
+        if (btnOuvrir && popup) {
+            btnOuvrir.addEventListener('click', function() {
+                console.log('CLIC BOUTON SIGNATURE DÉTECTÉ !');
+                popup.classList.add('active');
+            });
+        }
+        
+        // Test menus déroulants
+        menusActions.forEach((btn, index) => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log(`CLIC MENU ${index + 1} DÉTECTÉ !`);
+                
+                const menu = btn.parentElement.querySelector('.dropdown-menu');
+                if (menu) {
+                    // Ferme tous les autres
+                    document.querySelectorAll('.dropdown-menu.active').forEach(m => m.classList.remove('active'));
+                    // Ouvre celui-ci
+                    menu.classList.toggle('active');
+                }
+            });
+        });
+        
+        // Test actions dans les menus
+        boutonsRetard.forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('CLIC RETARD DÉTECTÉ !');
+                const motif = prompt('Test motif retard:');
+                if (motif) {
+                    console.log('Motif saisi:', motif);
+                    alert('Test réussi - Retard: ' + motif);
+                }
+            });
+        });
+        
+        boutonsCommentaire.forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('CLIC COMMENTAIRE DÉTECTÉ !');
+                const commentaire = prompt('Test commentaire:');
+                if (commentaire) {
+                    console.log('Commentaire saisi:', commentaire);
+                    alert('Test réussi - Commentaire: ' + commentaire);
+                }
+            });
+        });
+        
+        boutonsSignature.forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('CLIC SIGNATURE MANUELLE DÉTECTÉ !');
+                if (popup) {
+                    popup.classList.add('active');
+                    alert('Test signature manuelle - Popup ouverte');
+                }
+            });
+        });
+    });
+    </script>
+    
+    {# JS EXTERNE POUR PLUS DE LISIBILITÉ #}
+    <script src="{{ asset('js/formateur/fiche_presence_actions.js') }}"></script>
 {% endblock %}

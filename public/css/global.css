@@ -122,7 +122,6 @@ a.button {
     color: white;
 }
 .button--secondary {
-    background: var(--surface);
     color: var(--primary);
     border: 1px solid var(--primary);
 }

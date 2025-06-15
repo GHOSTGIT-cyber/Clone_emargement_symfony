@@ -1,0 +1,942 @@
+/* 
+ * public/css/formateur/fiche_presence_moderne.css
+ * CSS moderne pour la fiche de présence - Style harmonisé
+ */
+
+/* Variables CSS cohérentes avec le dashboard */
+:root {
+    --primary-color: #e85c33;
+    --primary-hover: #d64520;
+    --text-dark: #0E1E5B;
+    --text-light: #6c757d;
+    --bg-light: #f8f9fa;
+    --white: #ffffff;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #F44336;
+    --info: #2196F3;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --border-radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset et scroll pour toute la page - FORCE */
+html, body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scroll-behavior: smooth !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Container principal - SUPPRIME LE SCROLL INTERNE */
+.fiche-presence-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    /* SUPPRIMÉ : min-height qui causait le double scroll */
+    width: 100%;
+}
+
+/* === HEADER MODERNE === */
+.fiche-header {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    border: 2px solid var(--primary-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.formateur-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), #ff7a50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 4px solid var(--white);
+}
+
+.session-info h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 0.5rem 0;
+}
+
+.session-meta {
+    color: var(--text-light);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+}
+
+.session-meta i {
+    color: var(--primary-color);
+}
+
+.header-center .logo {
+    height: 60px;
+    filter: drop-shadow(var(--shadow-sm));
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    justify-content: flex-end;
+}
+
+.signatures-counter {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(232, 92, 51, 0.1), rgba(14, 30, 91, 0.1));
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(232, 92, 51, 0.2);
+}
+
+.counter-label {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.counter-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    width: 120px;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #ff7a50);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-btn {
+    background: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logout-btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* === SECTION PRINCIPALE === */
+.main-content {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid #e9ecef;
+}
+
+/* === SECTION ACTIVATION === */
+.activation-section {
+    margin-bottom: 3rem;
+}
+
+.activation-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.activation-section h2 i {
+    color: var(--primary-color);
+}
+
+.section-description {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.activation-btn {
+    background: linear-gradient(135deg, var(--primary-color), #ff7a50);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.activation-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* === TABLEAU DES APPRENANTS === */
+.apprenants-table-container {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #e9ecef;
+}
+
+.apprenants-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.apprenants-table thead {
+    background: linear-gradient(135deg, var(--text-dark), #1a2a6b);
+    color: var(--white);
+}
+
+.apprenants-table th {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.apprenants-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: var(--transition);
+}
+
+.apprenants-table tbody tr:hover {
+    background: rgba(232, 92, 51, 0.05);
+}
+
+.apprenants-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+/* Colonnes spécifiques */
+.checkbox-col { width: 50px; text-align: center; }
+.student-col { width: 250px; }
+.status-col { width: 140px; }
+.time-col { width: 120px; }
+.comment-col { width: 150px; }
+.retard-col { width: 130px; }
+.absence-col { width: 130px; }
+.anticipation-col { width: 130px; }
+.actions-col { width: 80px; text-align: center; }
+
+/* === INFORMATIONS ÉTUDIANT === */
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--info), #64b5f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.student-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1rem;
+}
+
+.student-email {
+    color: var(--text-light);
+    font-size: 0.825rem;
+}
+
+/* === BADGES DE STATUT === */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.status-present {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status-late {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--warning);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.status-absent {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.status-justified {
+    background: rgba(33, 150, 243, 0.15);
+    color: var(--info);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.status-pending {
+    background: rgba(108, 117, 125, 0.15);
+    color: var(--text-light);
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* === AFFICHAGE DES DONNÉES === */
+.signature-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--success);
+    font-weight: 600;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.comment-preview,
+.retard-motif,
+.absence-motif,
+.anticipation-motif {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.825rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    cursor: help;
+}
+
+.comment-preview {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--text-light);
+}
+
+.retard-motif {
+    background: rgba(255, 152, 0, 0.1);
+    color: var(--warning);
+}
+
+.absence-motif {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--danger);
+}
+
+.anticipation-motif {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--info);
+}
+
+.no-signature,
+.no-comment,
+.no-motif,
+.no-absence,
+.no-anticipation {
+    color: var(--text-light);
+    font-style: italic;
+    text-align: center;
+}
+
+/* === MENU ACTIONS - STYLE ORIGINAL EXACT === */
+.actions {
+    position: relative;
+    width: 50px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.more-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Menu déroulant - STYLE ORIGINAL EXACT */
+.dropdown-menu {
+    position: absolute !important;
+    right: 0;
+    left: auto;
+    top: 100%;
+    min-width: 160px;
+    z-index: 9999;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    display: none;
+    max-width: 90vw;
+    overflow-x: auto;
+    margin-top: 4px;
+}
+
+.dropdown-menu.active {
+    display: block;
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li {
+    padding: 8px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-menu li:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-menu .icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.dropdown-menu button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.dropdown-menu form {
+    margin: 0;
+    width: 100%;
+}
+
+.dropdown-menu form button {
+    width: 100%;
+    text-align: left;
+}
+
+/* Icônes spécifiques - STYLE ORIGINAL */
+.sign-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z'/></svg>");
+}
+
+.absence-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z'/></svg>");
+}
+
+.late-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/><path d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/></svg>");
+}
+
+.comment-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/></svg>");
+}
+
+.send-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/></svg>");
+}
+
+/* === SIGNATURE FORMATEUR === */
+.formateur-signature-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(232, 92, 51, 0.05), rgba(14, 30, 91, 0.05));
+    border-radius: var(--border-radius);
+    border: 2px solid var(--primary-color);
+}
+
+.formateur-signature-section h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.formateur-signature-section h3 i {
+    color: var(--primary-color);
+}
+
+.signature-confirmed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--success);
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 2rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(76, 175, 80, 0.3);
+}
+
+.signature-confirmed i {
+    font-size: 3rem;
+    color: var(--success);
+}
+
+.signature-confirmed small {
+    color: var(--text-light);
+    font-weight: normal;
+    font-size: 0.9rem;
+}
+
+.signature-required {
+    text-align: center;
+    padding: 2rem;
+}
+
+.signature-required p {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-sign-formateur {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-sign-formateur:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* === POPUP SIGNATURE - STYLE ORIGINAL CONSERVÉ === */
+.signature-popup {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(12, 29, 84, 0.85) !important; /* Bleu officiel comme l'original */
+    z-index: 9999 !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.signature-popup.active {
+    display: flex !important;
+}
+
+/* Modal de signature - style identique à l'original */
+.signature-modal {
+    background: #0c1d54 !important;
+    border-radius: 12px !important;
+    padding: 0 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    width: 100% !important;
+    max-width: 380px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    animation: fadeInUp 0.3s ease-out !important;
+}
+
+/* En-tête du popup */
+.signature-modal h2 {
+    background: #0c1d54 !important;
+    color: #fff !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 20px 20px 15px 20px !important;
+    margin: 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* Instructions de signature */
+.signature-instructions {
+    background: #0c1d54 !important;
+    color: #fff !important;
+    text-align: center !important;
+    padding: 0 20px 15px 20px !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+}
+
+/* Container de la zone de signature */
+.signature-container {
+    background: #0c1d54 !important;
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    position: relative !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+
+/* Canvas de signature - style gris comme l'original */
+.signature-canvas {
+    width: 100% !important;
+    max-width: 320px !important;
+    height: 140px !important;
+    background: #E0E0E0 !important;
+    border-radius: 8px !important;
+    border: 2px solid #fff !important;
+    display: block !important;
+    cursor: crosshair !important;
+    margin-bottom: 15px !important;
+}
+
+/* Boutons du popup */
+.signature-buttons {
+    background: #0c1d54 !important;
+    padding: 0 20px 20px 20px !important;
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+}
+
+.btn-signature {
+    padding: 10px 18px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    outline: none !important;
+}
+
+/* Bouton Retour - gris */
+.btn-retour {
+    background: #6c757d !important;
+    color: #fff !important;
+}
+
+.btn-retour:hover {
+    background: #5a6268 !important;
+}
+
+/* Bouton Effacer - orange comme dans l'original */
+.btn-effacer {
+    background: none !important;
+    border: none !important;
+    color: #e85c33 !important;
+    text-transform: uppercase !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    padding: 10px 15px !important;
+}
+
+.btn-effacer:hover {
+    background: rgba(232, 92, 51, 0.1) !important;
+    border-radius: 4px !important;
+}
+
+/* Bouton Valider - orange principal */
+.btn-valider {
+    background: #e85c33 !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    padding: 12px 24px !important;
+    border-radius: 25px !important;
+    box-shadow: 0 2px 6px rgba(232,92,51,0.3) !important;
+}
+
+.btn-valider:hover {
+    background: #cf481e !important;
+    box-shadow: 0 4px 8px rgba(232,92,51,0.4) !important;
+}
+
+.btn-valider:disabled {
+    background: #999 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Animation d'apparition */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === CHECKBOX STYLING === */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+input[type="checkbox"]:indeterminate {
+    accent-color: var(--warning);
+}
+
+/* === MESSAGES FLASH === */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.alert-warning {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--warning);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.alert-info {
+    background: rgba(33, 150, 243, 0.15);
+    color: var(--info);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 1200px) {
+    .fiche-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-right {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .fiche-presence-container {
+        padding: 1rem;
+    }
+    
+    .fiche-header {
+        padding: 1.5rem;
+    }
+    
+    .main-content {
+        padding: 1.5rem;
+    }
+    
+    .apprenants-table-container {
+        overflow-x: auto;
+    }
+    
+    .apprenants-table {
+        min-width: 1200px;
+    }
+    
+    .activation-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .signature-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-signature {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* === ANIMATIONS === */
+.student-row {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.student-row:nth-child(1) { animation-delay: 0.1s; }
+.student-row:nth-child(2) { animation-delay: 0.2s; }
+.student-row:nth-child(3) { animation-delay: 0.3s; }
+.student-row:nth-child(4) { animation-delay: 0.4s; }
+.student-row:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === ACCESSIBILITÉ === */
+button:focus,
+input:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* === OVERLAY POUR FERMER LES MENUS === */
+.dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999;
+    background: transparent;
+    display: none;
+}
+
+.dropdown-overlay.active {
+    display: block;
+}
