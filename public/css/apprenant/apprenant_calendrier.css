@@ -65,16 +65,3 @@
     border: 1px solid #ccc;
 }
 
-/* Couleurs associées */
-.legend-default {
-    background-color: #64b5f6; /* cours à venir */
-}
-.legend-absent {
-    background-color: #e57373; /* absence non justifiée */
-}
-.legend-justifie {
-    background-color: #81c784; /* absence justifiée */
-}
-.legend-admin {
-    background-color: #3788d8; /* admin, ou vue globale */
-}

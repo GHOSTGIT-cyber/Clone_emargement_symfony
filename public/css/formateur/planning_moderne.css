@@ -1,0 +1,461 @@
+/* 
+ * public/css/formateur/planning_moderne.css
+ * Style moderne pour le planning formateur - Harmonisé avec le dashboard
+ */
+
+/* === LÉGENDE DU CALENDRIER === */
+.calendar-legend {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #e9ecef;
+}
+
+.calendar-legend h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.calendar-legend h3 i {
+    color: var(--primary-color);
+}
+
+.legend-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: rgba(232, 92, 51, 0.05);
+    transition: var(--transition);
+}
+
+.legend-item:hover {
+    background: rgba(232, 92, 51, 0.1);
+    transform: translateX(2px);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 2px solid var(--white);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.legend-upcoming { background: #e85c33; } /* Orange principal */
+.legend-current { background: #4CAF50; } /* Vert */
+.legend-completed { background: #6c757d; } /* Gris */
+.legend-cancelled { background: #F44336; } /* Rouge */
+
+/* === CONTAINER CALENDRIER === */
+.calendar-container {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+/* === STYLES FULLCALENDAR MODERNISÉS === */
+.fc {
+    background: transparent;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* En-tête du calendrier */
+.fc-header-toolbar {
+    margin-bottom: 1.5rem !important;
+    padding: 1rem !important;
+    background: linear-gradient(135deg, rgba(232, 92, 51, 0.05), rgba(14, 30, 91, 0.05)) !important;
+    border-radius: var(--border-radius) !important;
+    border: 1px solid rgba(232, 92, 51, 0.1) !important;
+}
+
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: var(--text-dark) !important;
+    text-transform: capitalize !important;
+}
+
+/* Boutons de navigation */
+.fc-button {
+    background: var(--primary-color) !important;
+    color: var(--white) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.25rem !important;
+    transition: var(--transition) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.fc-button:hover {
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.fc-button:disabled {
+    background: #6c757d !important;
+    opacity: 0.6 !important;
+    transform: none !important;
+}
+
+.fc-button-active {
+    background: var(--text-dark) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Grille du calendrier */
+.fc-scrollgrid {
+    border: 1px solid #e9ecef !important;
+    border-radius: var(--border-radius) !important;
+    overflow: hidden !important;
+}
+
+.fc-col-header {
+    background: linear-gradient(135deg, var(--text-dark), #1a2a6b) !important;
+}
+
+.fc-col-header-cell {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--white) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    padding: 1rem 0.5rem !important;
+}
+
+/* Cellules des jours */
+.fc-daygrid-day,
+.fc-timegrid-slot {
+    border-color: #f1f3f4 !important;
+}
+
+.fc-daygrid-day-number,
+.fc-timegrid-slot-label {
+    color: var(--text-dark) !important;
+    font-weight: 500 !important;
+}
+
+/* Aujourd'hui */
+.fc-day-today {
+    background: rgba(232, 92, 51, 0.08) !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    background: var(--primary-color) !important;
+    color: var(--white) !important;
+    border-radius: 50% !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
+}
+
+/* === ÉVÉNEMENTS (SESSIONS) === */
+.fc-event {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.25rem 0.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    cursor: pointer !important;
+    transition: var(--transition) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    margin: 1px !important;
+}
+
+.fc-event:hover {
+    transform: translateY(-1px) scale(1.02) !important;
+    box-shadow: var(--shadow-md) !important;
+    z-index: 10 !important;
+}
+
+.fc-event-title {
+    font-weight: 600 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.fc-event-time {
+    font-weight: 500 !important;
+    opacity: 0.9 !important;
+}
+
+/* Classes d'état des événements */
+.event-upcoming {
+    background: linear-gradient(135deg, #e85c33, #ff7a50) !important;
+    color: var(--white) !important;
+    border-left: 4px solid #d64520 !important;
+}
+
+.event-current {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A) !important;
+    color: var(--white) !important;
+    border-left: 4px solid #388E3C !important;
+    animation: pulse 2s infinite !important;
+}
+
+.event-completed {
+    background: linear-gradient(135deg, #6c757d, #868e96) !important;
+    color: var(--white) !important;
+    border-left: 4px solid #495057 !important;
+    opacity: 0.8 !important;
+}
+
+.event-cancelled {
+    background: linear-gradient(135deg, #F44336, #EF5350) !important;
+    color: var(--white) !important;
+    border-left: 4px solid #D32F2F !important;
+    text-decoration: line-through !important;
+}
+
+/* Animation pour les sessions en cours */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* === MODAL ÉVÉNEMENT === */
+.event-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), #ff7a50);
+    color: var(--white);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-info {
+    margin-bottom: 2rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(232, 92, 51, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.info-item i {
+    color: var(--primary-color);
+    width: 20px;
+    text-align: center;
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    min-width: 80px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-action {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-action:hover {
+    background: var(--primary-hover);
+    color: var(--white);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .legend-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar-container {
+        padding: 1rem;
+    }
+    
+    .fc-header-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .modal-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .info-label {
+        min-width: auto;
+    }
+}
+
+/* === VUE LISTE === */
+.fc-list-event:hover {
+    background: rgba(232, 92, 51, 0.1) !important;
+}
+
+.fc-list-event-dot {
+    border-color: var(--primary-color) !important;
+}
+
+.fc-list-event-title {
+    color: var(--text-dark) !important;
+    font-weight: 600 !important;
+}
+
+.fc-list-event-time {
+    color: var(--primary-color) !important;
+    font-weight: 500 !important;
+}
+
+/* === AMÉLIORATIONS VISUELLES === */
+.fc-scrollgrid-sync-table {
+    border-radius: var(--border-radius);
+}
+
+.fc-timegrid-slot {
+    height: 3rem !important;
+}
+
+.fc-timegrid-slot-label-cushion {
+    color: var(--text-light) !important;
+    font-size: 0.875rem !important;
+}
+
+/* Amélioration de la lisibilité */
+.fc-event-main {
+    padding: 0.125rem 0.25rem !important;
+}
+
+/* Suppression du point par défaut */
+.fc-daygrid-event-dot {
+    display: none !important;
+}

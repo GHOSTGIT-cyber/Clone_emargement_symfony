@@ -1,20 +1,21 @@
 {# 
- * templates/formateur/fiche_presence.html.twig - VERSION MODERNISÉE
- * Style harmonisé avec le nouveau dashboard
- * JS externe pour plus de lisibilité
- * CONSERVE TOUTE LA LOGIQUE EXISTANTE
+ * templates/formateur/fiche_presence.html.twig - COMPATIBLE JS EXTERNE
+ * MENU S'OUVRE SUR LA DROITE, COMPATIBLE AVEC fiche_presence_actions.js
  #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Fiche de présence - {{ session.titre }}{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    {# CSS séparé et modernisé #}
+    {# CSS ESSENTIELS SEULEMENT #}
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/forms.css') }}">
+    
+    {# NOTRE CSS RÉÉCRIT #}
     <link rel="stylesheet" href="{{ asset('css/formateur/fiche_presence_moderne.css') }}">
-    {# Librairie SignaturePad pour les signatures #}
+    
+    {# LIBRAIRIES EXTERNES #}
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-    {# Font Awesome pour les icônes #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
@@ -59,7 +60,6 @@
                 </div>
             </div>
             
-            {# BOUTON DÉCONNEXION UNIQUE #}
             <form action="{{ path('app_logout') }}" method="post" class="logout-form">
                 <button type="submit" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
@@ -82,14 +82,13 @@
                 Sélectionnez les apprenants et activez la session pour qu'ils puissent signer électroniquement.
             </p>
             
-            {# FORMULAIRE EXISTANT - CONSERVE LA LOGIQUE #}
             <form action="{{ path('formateur_envoyer_email_signature', {'id': app.request.get('id')}) }}" method="post" class="activation-form">
                 <button type="submit" class="activation-btn">
                     <i class="fas fa-envelope"></i>
                     Activer la session et envoyer les notifications
                 </button>
                 
-                {# === TABLEAU DES APPRENANTS MODERNISÉ === #}
+                {# === TABLEAU DES APPRENANTS - COMPATIBLE JS EXTERNE === #}
                 <div class="apprenants-table-container">
                     <table class="apprenants-table">
                         <thead>
@@ -108,10 +107,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {# BOUCLE SUR LES APPRENANTS - CONSERVE LA LOGIQUE EXISTANTE #}
                             {% for apprenant in apprenants %}
                                 {% set signature = null %}
-                                {# Recherche de la signature de cet apprenant #}
                                 {% for sig in signatures %}
                                     {% if sig.user.id == apprenant.id %}
                                         {% set signature = sig %}
@@ -224,84 +221,108 @@
                                         {% endif %}
                                     </td>
                                     
-                                    {# DÉPART ANTICIPÉ (NOUVELLE COLONNE) #}
+                                    {# DÉPART ANTICIPÉ #}
                                     <td class="anticipation-col">
-                                        {% if signature and signature.motifDetails %}
-                                            <div class="anticipation-motif" title="{{ signature.motifDetails }}">
+                                        {% if signature and signature.heureDepart %}
+                                            <div class="anticipation-motif" title="Départ à {{ signature.heureDepart|date('H:i') }}{% if signature.motifDetails %} - {{ signature.motifDetails }}{% endif %}">
                                                 <i class="fas fa-running"></i>
-                                                {{ signature.motifDetails|slice(0, 20) }}{% if signature.motifDetails|length > 20 %}...{% endif %}
+                                                {{ signature.heureDepart|date('H:i') }}{% if signature.motifDetails %} - {{ signature.motifDetails|slice(0, 15) }}{% if signature.motifDetails|length > 15 %}...{% endif %}{% endif %}
                                             </div>
                                         {% else %}
                                             <span class="no-anticipation">—</span>
                                         {% endif %}
                                     </td>
                                     
-                                    {# MENU ACTIONS MODERNISÉ - STYLE ORIGINAL #}
+                                    {# === MENU ACTIONS - FIXES POUR CLICS === #}
                                     <td class="actions-col">
                                         <div class="actions">
                                             <button type="button" class="action-btn" 
                                                     data-student-name="{{ apprenant.firstname }} {{ apprenant.lastname }}"
-                                                    aria-label="Actions pour {{ apprenant.firstname }} {{ apprenant.lastname }}">
-                                                <span class="more-icon"></span>
+                                                    data-signature-id="{{ signature ? signature.id : '' }}"
+                                                    data-session-id="{{ session.id }}"
+                                                    aria-label="Actions pour {{ apprenant.firstname }} {{ apprenant.lastname }}"
+                                                    style="pointer-events: auto; position: relative; z-index: 100;">
+                                                <span class="more-icon" style="pointer-events: none;"></span>
                                             </button>
                                             
-                                            {# MENU DÉROULANT - STYLE ORIGINAL #}
-                                            <div class="dropdown-menu">
-                                                <ul>
+                                            {# MENU DÉROULANT AVEC FIXES POUR CLICS #}
+                                            <div class="dropdown-menu" style="pointer-events: auto; position: relative; z-index: 999999;">
+                                                <ul style="pointer-events: auto;">
                                                     {# SIGNATURE MANUELLE #}
-                                                    <li>
-                                                        <span class="icon sign-icon"></span>
-                                                        <button type="button" class="sign-manual" 
+                                                    <li style="pointer-events: auto;">
+                                                        <button type="button" 
+                                                                class="sign-manual" 
                                                                 data-signature-id="{{ signature ? signature.id : '' }}"
-                                                                data-student-name="{{ apprenant.firstname }} {{ apprenant.lastname }}">
-                                                            Faire signer manuellement
+                                                                data-student-name="{{ apprenant.firstname }} {{ apprenant.lastname }}"
+                                                                style="pointer-events: auto; position: relative; z-index: 1000000; cursor: pointer;">
+                                                            <i class="fas fa-edit" style="pointer-events: none;"></i>
+                                                            <span style="pointer-events: none;">Faire signer manuellement</span>
                                                         </button>
                                                     </li>
                                                     
                                                     {# MARQUER EN RETARD #}
-                                                    <li>
-                                                        <span class="icon late-icon"></span>
-                                                        <button type="button" class="mark-late" 
+                                                    <li style="pointer-events: auto;">
+                                                        <button type="button" 
+                                                                class="mark-late" 
                                                                 data-signature-id="{{ signature ? signature.id : '' }}"
-                                                                data-session-id="{{ session.id }}">
-                                                            Marquer en retard
+                                                                data-session-id="{{ session.id }}"
+                                                                style="pointer-events: auto; position: relative; z-index: 1000000; cursor: pointer;">
+                                                            <i class="fas fa-clock" style="pointer-events: none;"></i>
+                                                            <span style="pointer-events: none;">Marquer en retard</span>
                                                         </button>
                                                     </li>
                                                     
                                                     {# AJOUTER COMMENTAIRE #}
-                                                    <li>
-                                                        <span class="icon comment-icon"></span>
-                                                        <button type="button" class="add-comment" 
-                                                                data-signature-id="{{ signature ? signature.id : '' }}">
-                                                            Ajouter commentaire
+                                                    <li style="pointer-events: auto;">
+                                                        <button type="button" 
+                                                                class="add-comment" 
+                                                                data-signature-id="{{ signature ? signature.id : '' }}"
+                                                                style="pointer-events: auto; position: relative; z-index: 1000000; cursor: pointer;">
+                                                            <i class="fas fa-comment" style="pointer-events: none;"></i>
+                                                            <span style="pointer-events: none;">Ajouter commentaire</span>
                                                         </button>
                                                     </li>
                                                     
-                                                    {# ABSENCE JUSTIFIÉE #}
-                                                    <li>
-                                                        <span class="icon absence-icon"></span>
-                                                        <form method="post" action="{{ path('signature_session_justified', {'id': signature ? signature.id : 0}) }}" style="display: inline;">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token('justified_signature_' ~ (signature ? signature.id : 0)) }}">
+                                                    {# DÉPART ANTICIPÉ - NOUVEAU #}
+                                                    <li style="pointer-events: auto;">
+                                                        <button type="button" 
+                                                                class="mark-early-departure" 
+                                                                data-signature-id="{{ signature ? signature.id : '' }}"
+                                                                style="pointer-events: auto; position: relative; z-index: 1000000; cursor: pointer;">
+                                                            <i class="fas fa-running" style="pointer-events: none;"></i>
+                                                            <span style="pointer-events: none;">Départ anticipé</span>
+                                                        </button>
+                                                    </li>
+                                                    
+                                                    {# EFFACER SIGNATURE #}
+                                                    <li style="pointer-events: auto;">
+                                                        <form method="post" action="{{ path('signature_session_delete', {'id': signature ? signature.id : 0}) }}" 
+                                                              style="display: inline; width: 100%; pointer-events: auto;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_signature_' ~ (signature ? signature.id : 0)) }}">
                                                             <input type="hidden" name="session_id" value="{{ session.id }}">
-                                                            <button type="submit" onclick="return confirm('Marquer cette absence comme justifiée ?')">
-                                                                Absence justifiée
+                                                            <button type="submit" 
+                                                                    onclick="return confirm('Effacer cette signature ?')" 
+                                                                    style="background: none; border: none; cursor: pointer; font-size: 14px; color: #F44336; padding: 8px 15px; text-align: left; width: 100%; display: flex; align-items: center; gap: 10px; pointer-events: auto; position: relative; z-index: 1000000;">
+                                                                <i class="fas fa-trash" style="pointer-events: none;"></i>
+                                                                <span style="pointer-events: none;">Effacer signature</span>
                                                             </button>
                                                         </form>
                                                     </li>
                                                     
-                                                    {# EFFACER SIGNATURE #}
-                                                    {% if signature and signature.signatureData %}
-                                                    <li>
-                                                        <span class="icon send-icon"></span>
-                                                        <form method="post" action="{{ path('signature_session_delete', {'id': signature.id}) }}" style="display: inline;">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_signature_' ~ signature.id) }}">
+                                                    {# ABSENCE JUSTIFIÉE #}
+                                                    <li style="pointer-events: auto;">
+                                                        <form method="post" action="{{ path('signature_session_justified', {'id': signature ? signature.id : 0}) }}" 
+                                                              style="display: inline; width: 100%; pointer-events: auto;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('justified_signature_' ~ (signature ? signature.id : 0)) }}">
                                                             <input type="hidden" name="session_id" value="{{ session.id }}">
-                                                            <button type="submit" onclick="return confirm('Effacer cette signature ?')">
-                                                                Effacer signature
+                                                            <button type="submit" 
+                                                                    onclick="return confirm('Marquer cette absence comme justifiée ?')" 
+                                                                    style="background: none; border: none; cursor: pointer; font-size: 14px; color: #333; padding: 8px 15px; text-align: left; width: 100%; display: flex; align-items: center; gap: 10px; pointer-events: auto; position: relative; z-index: 1000000;">
+                                                                <i class="fas fa-check-circle" style="pointer-events: none;"></i>
+                                                                <span style="pointer-events: none;">Absence justifiée</span>
                                                             </button>
                                                         </form>
                                                     </li>
-                                                    {% endif %}
                                                 </ul>
                                             </div>
                                         </div>
@@ -316,7 +337,7 @@
     </div>
 </div>
 
-{# === POPUP SIGNATURE (CONSERVE LE STYLE EXISTANT) === #}
+{# === POPUP SIGNATURE === #}
 <div id="signature-popup" class="signature-popup {% if not formateur_a_deja_signe %}active{% endif %}">
     <div class="signature-modal">
         <h2>Signature du formateur</h2>
@@ -347,106 +368,21 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    {# DÉFINITION DES ROUTES POUR LE JAVASCRIPT #}
+    {# DÉFINITION DES ROUTES POUR LE JAVASCRIPT EXTERNE #}
     <script>
-        // Configuration des routes utilisées par le JavaScript
-        // Ces URLs sont générées par Symfony et utilisées par les fonctions JS
         window.routes = {
             signatureFormateur: "{{ path('formateur_sauvegarder_signature', {'id': app.request.get('id')}) }}",
-            signatureManuelle: "{{ path('apprenant_signature_manual_sign', {'id': 'SIGNATURE_ID'}) }}",
+            signatureManuelle: "{{ path('formateur_signature_manual_sign', {'id': 'SIGNATURE_ID'}) }}",
             marquerRetard: "{{ path('signature_session_late', {'id': 'SIGNATURE_ID'}) }}",
-            ajouterCommentaire: "{{ path('signature_session_comment', {'id': 'SIGNATURE_ID'}) }}"
+            ajouterCommentaire: "{{ path('signature_session_comment', {'id': 'SIGNATURE_ID'}) }}",
+            departAnticipe: "{{ path('signature_session_early_departure', {'id': 'SIGNATURE_ID'}) }}"
         };
         
-        // ID de session pour certaines opérations
         window.sessionId = {{ app.request.get('id') }};
         
-        console.log('[Config] Routes JavaScript configurées');
+        console.log('[Config] Routes JavaScript configurées pour JS externe');
     </script>
     
-    {# SCRIPT TEST TEMPORAIRE - Pour vérifier que tout marche #}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('=== TEST FICHE PRÉSENCE ===');
-        
-        // Test des éléments essentiels
-        const popup = document.getElementById('signature-popup');
-        const canvas = document.getElementById('signature-canvas');
-        const btnOuvrir = document.getElementById('btn-ouvrir-signature');
-        const menusActions = document.querySelectorAll('.action-btn');
-        const boutonsRetard = document.querySelectorAll('.mark-late');
-        const boutonsCommentaire = document.querySelectorAll('.add-comment');
-        const boutonsSignature = document.querySelectorAll('.sign-manual');
-        
-        console.log('Popup signature:', !!popup);
-        console.log('Canvas signature:', !!canvas);
-        console.log('Bouton ouvrir signature:', !!btnOuvrir);
-        console.log('Menus actions:', menusActions.length);
-        console.log('Boutons retard:', boutonsRetard.length);
-        console.log('Boutons commentaire:', boutonsCommentaire.length);
-        console.log('Boutons signature manuelle:', boutonsSignature.length);
-        console.log('SignaturePad disponible:', typeof SignaturePad !== 'undefined');
-        
-        // Test ouverture popup signature
-        if (btnOuvrir && popup) {
-            btnOuvrir.addEventListener('click', function() {
-                console.log('CLIC BOUTON SIGNATURE DÉTECTÉ !');
-                popup.classList.add('active');
-            });
-        }
-        
-        // Test menus déroulants
-        menusActions.forEach((btn, index) => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                console.log(`CLIC MENU ${index + 1} DÉTECTÉ !`);
-                
-                const menu = btn.parentElement.querySelector('.dropdown-menu');
-                if (menu) {
-                    // Ferme tous les autres
-                    document.querySelectorAll('.dropdown-menu.active').forEach(m => m.classList.remove('active'));
-                    // Ouvre celui-ci
-                    menu.classList.toggle('active');
-                }
-            });
-        });
-        
-        // Test actions dans les menus
-        boutonsRetard.forEach(btn => {
-            btn.addEventListener('click', function() {
-                console.log('CLIC RETARD DÉTECTÉ !');
-                const motif = prompt('Test motif retard:');
-                if (motif) {
-                    console.log('Motif saisi:', motif);
-                    alert('Test réussi - Retard: ' + motif);
-                }
-            });
-        });
-        
-        boutonsCommentaire.forEach(btn => {
-            btn.addEventListener('click', function() {
-                console.log('CLIC COMMENTAIRE DÉTECTÉ !');
-                const commentaire = prompt('Test commentaire:');
-                if (commentaire) {
-                    console.log('Commentaire saisi:', commentaire);
-                    alert('Test réussi - Commentaire: ' + commentaire);
-                }
-            });
-        });
-        
-        boutonsSignature.forEach(btn => {
-            btn.addEventListener('click', function() {
-                console.log('CLIC SIGNATURE MANUELLE DÉTECTÉ !');
-                if (popup) {
-                    popup.classList.add('active');
-                    alert('Test signature manuelle - Popup ouverte');
-                }
-            });
-        });
-    });
-    </script>
-    
-    {# JS EXTERNE POUR PLUS DE LISIBILITÉ #}
+    {# VOTRE JS EXTERNE EXISTANT #}
     <script src="{{ asset('js/formateur/fiche_presence_actions.js') }}"></script>
 {% endblock %}

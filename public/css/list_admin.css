@@ -363,3 +363,13 @@ td {
     font-weight: bold;
     cursor: pointer;
 }
+
+.pdf-form-section {
+    margin-top: 2rem;
+}
+.form-inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}

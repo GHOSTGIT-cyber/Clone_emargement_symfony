@@ -47,3 +47,29 @@
     font-size: 0.8rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
+
+/* Couleurs associées */
+.legend-défault {
+     background-color: #0d47a1; /* autres */
+}
+
+.legend-présent {
+    background-color: #81c784; /* cours présent */
+}
+.legend-absent {
+    background-color: #e57373; /* absence non justifiée */
+}
+.legend-justifie {
+    background-color: #fdd835; /* absence justifiée */
+}
+.legend-retard {
+    background-color: #ffb74d; /* admin, ou vue globale */
+}
+
+.legend-départ {
+   background-color: #ba68c8;  
+}
+
+.legend-avenir {
+   background-color: #64b5f6; 
+}

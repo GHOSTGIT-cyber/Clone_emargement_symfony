@@ -1,9 +1,10 @@
 /* 
  * public/css/formateur/fiche_presence_moderne.css
- * CSS moderne pour la fiche de présence - Style harmonisé
+ * RÉÉCRITE COMPLÈTE - CSS moderne pour la fiche de présence
+ * MENU S'OUVRE SUR LA DROITE, PAS AU-DESSUS DES APPRENANTS
  */
 
-/* Variables CSS cohérentes avec le dashboard */
+/* Variables CSS */
 :root {
     --primary-color: #e85c33;
     --primary-hover: #d64520;
@@ -22,15 +23,19 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Reset et scroll pour toute la page - FORCE */
+/* Reset et base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 html, body {
     height: auto !important;
     min-height: 100vh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     scroll-behavior: smooth !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
 body {
@@ -40,16 +45,15 @@ body {
     line-height: 1.6;
 }
 
-/* Container principal - SUPPRIME LE SCROLL INTERNE */
+/* Container principal */
 .fiche-presence-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    /* SUPPRIMÉ : min-height qui causait le double scroll */
     width: 100%;
 }
 
-/* === HEADER MODERNE === */
+/* === HEADER === */
 .fiche-header {
     background: var(--white);
     border-radius: var(--border-radius);
@@ -243,15 +247,17 @@ body {
 .apprenants-table-container {
     background: var(--white);
     border-radius: var(--border-radius);
-    overflow: hidden;
+    overflow: visible; /* CHANGÉ : permet au menu de déborder */
     box-shadow: var(--shadow-sm);
     border: 1px solid #e9ecef;
+    position: relative; /* AJOUTÉ : pour le positionnement des menus */
 }
 
 .apprenants-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    position: relative; /* AJOUTÉ */
 }
 
 .apprenants-table thead {
@@ -272,6 +278,7 @@ body {
 .apprenants-table tbody tr {
     border-bottom: 1px solid #e9ecef;
     transition: var(--transition);
+    position: relative; /* AJOUTÉ : pour le positionnement des menus */
 }
 
 .apprenants-table tbody tr:hover {
@@ -281,6 +288,7 @@ body {
 .apprenants-table td {
     padding: 1rem 0.75rem;
     vertical-align: middle;
+    position: relative; /* AJOUTÉ */
 }
 
 /* Colonnes spécifiques */
@@ -292,7 +300,12 @@ body {
 .retard-col { width: 130px; }
 .absence-col { width: 130px; }
 .anticipation-col { width: 130px; }
-.actions-col { width: 80px; text-align: center; }
+.actions-col { 
+    width: 80px; 
+    text-align: center; 
+    position: relative; /* AJOUTÉ : pour les menus */
+    overflow: visible !important; /* AJOUTÉ : permet au menu de déborder à droite */
+}
 
 /* === INFORMATIONS ÉTUDIANT === */
 .student-info {
@@ -425,211 +438,278 @@ body {
     text-align: center;
 }
 
-/* === MENU ACTIONS - STYLE ORIGINAL EXACT === */
+/* === MENU ACTIONS - NOUVEAU SYSTÈME VERS LA DROITE === */
 .actions {
     position: relative;
     width: 50px;
-}
-
-.action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
+    /* IMPORTANT : overflow visible pour que le menu puisse déborder */
+    overflow: visible !important;
+}
+
+.action-btn {
+    background: var(--white);
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+    position: relative;
+    z-index: 10;
 }
 
 .action-btn:hover {
-    background-color: #f0f0f0;
+    background: var(--primary-color);
+    color: var(--white);
+    transform: scale(1.1);
 }
 
 .more-icon {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/></svg>");
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23e85c33' viewBox='0 0 24 24'><path d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/></svg>");
     background-repeat: no-repeat;
     background-position: center;
+    pointer-events: none;
 }
 
-/* Menu déroulant - STYLE ORIGINAL EXACT */
+.action-btn:hover .more-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'><path d='M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/></svg>");
+}
+
+/* === MENU DÉROULANT - S'OUVRE SUR LA DROITE === */
 .dropdown-menu {
+    /* POSITION SIMPLE : À DROITE DU BOUTON */
     position: absolute !important;
-    right: 0;
-    left: auto;
-    top: 100%;
-    min-width: 160px;
-    z-index: 9999;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    display: none;
-    max-width: 90vw;
-    overflow-x: auto;
-    margin-top: 4px;
+    top: 0 !important;
+    left: 100% !important;
+    right: auto !important;
+    margin-left: 10px !important;
+    
+    /* DIMENSIONS */
+    min-width: 250px !important;
+    width: 250px !important;
+    
+    /* Z-INDEX ÉLEVÉ */
+    z-index: 99999 !important;
+    
+    /* STYLE */
+    background: white !important;
+    border: 2px solid #e85c33 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    
+    /* AFFICHAGE */
+    display: none !important;
+    
+    /* ÉVÉNEMENTS */
+    pointer-events: auto !important;
 }
 
+/* Menu actif - SIMPLE */
 .dropdown-menu.active {
-    display: block;
+    display: block !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    z-index: 999999 !important;
 }
 
+/* === FIX CLICS - SIMPLE === */
 .dropdown-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    list-style: none !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    pointer-events: auto !important;
 }
 
 .dropdown-menu li {
-    padding: 8px 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.dropdown-menu li:hover {
-    background-color: #f5f5f5;
-}
-
-.dropdown-menu .icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 10px;
-    display: inline-block;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    margin: 2px 0 !important;
+    pointer-events: auto !important;
 }
 
 .dropdown-menu button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    padding: 0;
-    text-align: left;
-    width: 100%;
+    width: 100% !important;
+    padding: 10px !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    color: #333 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    
+    /* FIX CLICS */
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1000000 !important;
+}
+
+.dropdown-menu button:hover {
+    background: #f0f0f0 !important;
 }
 
 .dropdown-menu form {
-    margin: 0;
-    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    pointer-events: auto !important;
 }
 
 .dropdown-menu form button {
-    width: 100%;
-    text-align: left;
+    width: 100% !important;
+    pointer-events: auto !important;
 }
 
-/* Icônes spécifiques - STYLE ORIGINAL */
-.sign-icon {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z'/></svg>");
-}
-
-.absence-icon {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z'/></svg>");
-}
-
-.late-icon {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/><path d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/></svg>");
-}
-
-.comment-icon {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z'/></svg>");
-}
-
-.send-icon {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'><path d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/></svg>");
-}
-
-/* === SIGNATURE FORMATEUR === */
-.formateur-signature-section {
-    margin-top: 3rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, rgba(232, 92, 51, 0.05), rgba(14, 30, 91, 0.05));
-    border-radius: var(--border-radius);
-    border: 2px solid var(--primary-color);
-}
-
-.formateur-signature-section h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.formateur-signature-section h3 i {
-    color: var(--primary-color);
-}
-
-.signature-confirmed {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    color: var(--success);
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 2rem;
-    background: rgba(76, 175, 80, 0.1);
-    border-radius: var(--border-radius);
-    border: 2px solid rgba(76, 175, 80, 0.3);
-}
-
-.signature-confirmed i {
-    font-size: 3rem;
-    color: var(--success);
-}
-
-.signature-confirmed small {
-    color: var(--text-light);
-    font-weight: normal;
-    font-size: 0.9rem;
-}
-
-.signature-required {
-    text-align: center;
-    padding: 2rem;
-}
-
-.signature-required p {
-    color: var(--text-light);
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-}
-
-.btn-sign-formateur {
+/* En-tête du menu */
+.dropdown-menu-header {
     background: var(--primary-color);
     color: var(--white);
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
     font-weight: 600;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    box-shadow: var(--shadow-md);
+    font-size: 1rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn-sign-formateur:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+/* Liste du menu */
+.dropdown-menu ul {
+    list-style: none !important;
+    padding: 0.5rem !important;
+    margin: 0 !important;
+    background: var(--white) !important;
+    /* FIX : Force les événements sur la liste */
+    pointer-events: auto !important;
+    position: relative !important;
 }
 
-/* === POPUP SIGNATURE - STYLE ORIGINAL CONSERVÉ === */
+/* Éléments de la liste */
+.dropdown-menu li {
+    margin: 0.25rem 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    /* FIX : Force les événements sur les éléments */
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1000000 !important;
+}
+
+.dropdown-menu li:hover {
+    background: rgba(232, 92, 51, 0.1) !important;
+}
+
+/* Boutons dans le menu - FIX PRINCIPAL */
+.dropdown-menu button {
+    width: 100% !important;
+    padding: 0.75rem 1rem !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    font-size: 0.9rem !important;
+    color: var(--text-dark) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    border-radius: 6px !important;
+    transition: var(--transition) !important;
+    font-weight: 500 !important;
+    
+    /* FIX PRINCIPAL : Force les événements de clic */
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1000001 !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    
+    /* FIX : Empêche les interférences */
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.dropdown-menu button:hover {
+    background: rgba(232, 92, 51, 0.1) !important;
+    color: var(--primary-color) !important;
+    transform: translateX(5px) !important;
+}
+
+/* FIX : Force les événements sur les icônes */
+.dropdown-menu button i {
+    width: 20px !important;
+    text-align: center !important;
+    font-size: 1rem !important;
+    pointer-events: none !important; /* Les icônes ne bloquent pas les clics */
+}
+
+/* Couleurs spécifiques des boutons */
+.dropdown-menu button.sign-manual {
+    border-left: 3px solid var(--info);
+}
+
+.dropdown-menu button.mark-late {
+    border-left: 3px solid var(--warning);
+}
+
+.dropdown-menu button.add-comment {
+    border-left: 3px solid var(--success);
+}
+
+.dropdown-menu button[onclick*="delete"],
+.dropdown-menu button[onclick*="Effacer"] {
+    border-left: 3px solid var(--danger);
+    color: var(--danger) !important;
+}
+
+.dropdown-menu button[onclick*="justified"] {
+    border-left: 3px solid var(--info);
+}
+
+/* Formulaires dans le menu - FIX */
+.dropdown-menu form {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    pointer-events: auto !important;
+    position: relative !important;
+}
+
+.dropdown-menu form button {
+    width: 100% !important;
+    pointer-events: auto !important;
+}
+
+/* === OVERLAY POUR FERMER LE MENU === */
+.dropdown-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    z-index: 99998 !important;
+    display: none !important;
+    backdrop-filter: blur(2px) !important;
+}
+
+.dropdown-overlay.active {
+    display: block !important;
+}
+
+/* === POPUP SIGNATURE === */
 .signature-popup {
     display: none !important;
     position: fixed !important;
@@ -637,8 +717,8 @@ body {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: rgba(12, 29, 84, 0.85) !important; /* Bleu officiel comme l'original */
-    z-index: 9999 !important;
+    background: rgba(12, 29, 84, 0.85) !important;
+    z-index: 100000 !important;
     align-items: center !important;
     justify-content: center !important;
 }
@@ -647,7 +727,6 @@ body {
     display: flex !important;
 }
 
-/* Modal de signature - style identique à l'original */
 .signature-modal {
     background: #0c1d54 !important;
     border-radius: 12px !important;
@@ -661,7 +740,6 @@ body {
     animation: fadeInUp 0.3s ease-out !important;
 }
 
-/* En-tête du popup */
 .signature-modal h2 {
     background: #0c1d54 !important;
     color: #fff !important;
@@ -674,7 +752,6 @@ body {
     letter-spacing: 1px !important;
 }
 
-/* Instructions de signature */
 .signature-instructions {
     background: #0c1d54 !important;
     color: #fff !important;
@@ -684,7 +761,6 @@ body {
     margin: 0 !important;
 }
 
-/* Container de la zone de signature */
 .signature-container {
     background: #0c1d54 !important;
     padding: 20px !important;
@@ -692,12 +768,8 @@ body {
     flex-direction: column !important;
     align-items: center !important;
     position: relative !important;
-    border: none !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
 }
 
-/* Canvas de signature - style gris comme l'original */
 .signature-canvas {
     width: 100% !important;
     max-width: 320px !important;
@@ -708,9 +780,9 @@ body {
     display: block !important;
     cursor: crosshair !important;
     margin-bottom: 15px !important;
+    touch-action: none !important;
 }
 
-/* Boutons du popup */
 .signature-buttons {
     background: #0c1d54 !important;
     padding: 0 20px 20px 20px !important;
@@ -731,7 +803,6 @@ body {
     outline: none !important;
 }
 
-/* Bouton Retour - gris */
 .btn-retour {
     background: #6c757d !important;
     color: #fff !important;
@@ -741,7 +812,6 @@ body {
     background: #5a6268 !important;
 }
 
-/* Bouton Effacer - orange comme dans l'original */
 .btn-effacer {
     background: none !important;
     border: none !important;
@@ -757,7 +827,6 @@ body {
     border-radius: 4px !important;
 }
 
-/* Bouton Valider - orange principal */
 .btn-valider {
     background: #e85c33 !important;
     color: #fff !important;
@@ -778,7 +847,6 @@ body {
     box-shadow: none !important;
 }
 
-/* Animation d'apparition */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -850,6 +918,12 @@ input[type="checkbox"]:indeterminate {
     .header-right {
         justify-content: center;
     }
+    
+    /* Menu plus petit sur tablettes */
+    .dropdown-menu {
+        min-width: 280px !important;
+        max-width: 300px !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -876,6 +950,21 @@ input[type="checkbox"]:indeterminate {
     .activation-btn {
         width: 100%;
         justify-content: center;
+    }
+    
+    /* Menu mobile - position adaptée */
+    .dropdown-menu {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        min-width: 300px !important;
+        max-width: 90vw !important;
+    }
+    
+    .dropdown-menu.active {
+        transform: translate(-50%, -50%) !important;
     }
     
     .signature-buttons {
@@ -925,18 +1014,86 @@ input:focus {
     }
 }
 
-/* === OVERLAY POUR FERMER LES MENUS === */
-.dropdown-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 999;
-    background: transparent;
-    display: none;
+/* === STYLES SPÉCIAUX POUR LE MENU LATÉRAL === */
+
+/* Indicateur visuel qu'un menu est ouvert */
+.actions.menu-open .action-btn {
+    background: var(--primary-color) !important;
+    color: var(--white) !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 0 3px rgba(232, 92, 51, 0.3) !important;
+}
+
+/* Animation d'ouverture du menu */
+.dropdown-menu {
+    animation: none;
+}
+
+.dropdown-menu.active {
+    animation: slideInRight 0.3s ease-out !important;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+/* Flèche pointant vers l'étudiant concerné */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 15px solid var(--primary-color);
+}
+
+/* === AMÉLIORATIONS VISUELLES === */
+
+/* Effet de survol sur les lignes du tableau */
+.apprenants-table tbody tr:hover {
+    background: rgba(232, 92, 51, 0.05) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 2px 0 8px rgba(232, 92, 51, 0.1) !important;
+}
+
+/* Highlight de la ligne dont le menu est ouvert */
+.apprenants-table tbody tr.menu-active {
+    background: rgba(232, 92, 51, 0.1) !important;
+    border-left: 4px solid var(--primary-color) !important;
+    transform: translateX(4px) !important;
+    box-shadow: 4px 0 12px rgba(232, 92, 51, 0.2) !important;
+}
+
+/* === CORRECTIONS DE Z-INDEX === */
+
+/* S'assurer que le menu est toujours au-dessus */
+.dropdown-menu.active {
+    z-index: 100001 !important;
 }
 
 .dropdown-overlay.active {
-    display: block;
+    z-index: 100000 !important;
 }
+
+/* Éviter les conflits avec d'autres éléments */
+.fiche-header {
+    z-index: 99 !important;
+}
+
+.main-content {
+    z-index: 1 !important;
+    position: relative;
+}
+
+/* === FIN DU FICHIER CSS === */

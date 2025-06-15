@@ -4,73 +4,402 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/formateur.css') }}">
+    {# CSS harmonisé avec le dashboard #}
+    <link rel="stylesheet" href="{{ asset('css/formateur/dashboard_formateur.css') }}">
+    {# Font Awesome pour les icônes #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block body %}
-    <div class="page-formateur">
-        <div class="header">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <span>
-                        <div class="user-initials-placeholder">
-                            {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
-                        </div>
-                    </span>
-                </div>
+<div class="dashboard-container">
+    <!-- Header moderne identique au dashboard -->
+    <div class="dashboard-header">
+        <div class="header-left">
+            <div class="user-avatar">
+                {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
             </div>
-            <div class="logo">
-                <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR">
+            <div class="user-info">
+                <h1>Bonjour, {{ app.user.firstname }}</h1>
+                <p>{{ "now"|date("l d F Y") }}</p>
             </div>
         </div>
-        <a href="{{ path('app_logout') }}">Déconnexion</a>
-        <div class="logout-container">
+        
+        <div class="header-right">
+            <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR" class="logo">
             <form action="{{ path('app_logout') }}" method="post">
-                <button type="submit" class="logout-btn">Déconnexion</button>
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
             </form>
         </div>
-        <div class="navigation">
-            <a class="nav-item" href="#">Sessions</a>
-            <a class="nav-item" href="{{ path('mon_planning') }}">Mon planning</a>
-            <a class="nav-item active" href="{{ path('formateur_historique') }}">Historiques</a>
+    </div>
+
+    <!-- Navigation identique au dashboard -->
+    <nav class="navigation-tabs">
+        <a href="{{ path('formateur_dashboard') }}" class="nav-tab">
+            <i class="fas fa-home"></i> Sessions
+        </a>
+        <a href="{{ path('mon_planning') }}" class="nav-tab">
+            <i class="fas fa-calendar"></i> Mon planning
+        </a>
+        <a href="{{ path('formateur_historique') }}" class="nav-tab active">
+            <i class="fas fa-history"></i> Historique
+        </a>
+    </nav>
+
+    <!-- Section Historique -->
+    <div class="sessions-section">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i> Historique des sessions
+                </h2>
+                <p class="section-subtitle">{{ historique|length }} session{{ historique|length > 1 ? 's' : '' }} terminée{{ historique|length > 1 ? 's' : '' }}</p>
+            </div>
+            
+            <!-- Statistiques rapides -->
+            <div class="stats-quick">
+                {% set totalApprenants = 0 %}
+                {% set totalSignatures = 0 %}
+                {% for cours in historique %}
+                    {% set totalApprenants = totalApprenants + cours.apprenants %}
+                    {% set totalSignatures = totalSignatures + cours.signatures_obtenues %}
+                {% endfor %}
+                
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-number">{{ totalApprenants }}</span>
+                    <span class="stat-label">Apprenants formés</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span class="stat-number">{{ totalSignatures }}</span>
+                    <span class="stat-label">Signatures obtenues</span>
+                </div>
+            </div>
         </div>
 
-        <div class="content">
-            <div class="day-section">
-                <h2>Historique des sessions ({{ historique|length }})</h2>
-
+        <!-- Liste des sessions terminées -->
+        {% if historique|length > 0 %}
+            <div class="cours-grid">
                 {% for cours in historique %}
-                    <a class="cours-card">
+                    <div class="cours-card historique-card">
                         <div class="cours-header">
-                            <div class="cours-title">{{ cours.titre }}</div>
-                            <div class="cours-badge">{{ cours.badge }}</div>
-                        </div>
-                        <div class="cours-details">
-                            <div class="cours-info">
-                                <div class="cours-horaire">{{ cours.horaire }}</div>
-                                <div class="cours-date">{{ cours.date }}</div>
+                            <div class="cours-title-wrapper">
+                                <h3 class="cours-title">{{ cours.titre }}</h3>
+                                <span class="cours-badge completed">
+                                    <i class="fas fa-check"></i> Terminée
+                                </span>
                             </div>
-                            <div class="cours-meta">
-                                <div class="cours-apprenants">{{ cours.apprenants }} apprenants</div>
-                                <div class="cours-salle">{{ cours.salle }}</div>
+                            <div class="cours-formation">{{ cours.badge }}</div>
+                        </div>
+
+                        <div class="cours-content">
+                            <!-- Informations principales -->
+                            <div class="cours-info-grid">
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span class="info-label">Date</span>
+                                    <span class="info-value">{{ cours.date }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span class="info-label">Horaires</span>
+                                    <span class="info-value">{{ cours.horaire }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-door-open"></i>
+                                    <span class="info-label">Salle</span>
+                                    <span class="info-value">{{ cours.salle ?: 'Non définie' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-users"></i>
+                                    <span class="info-label">Participants</span>
+                                    <span class="info-value">{{ cours.apprenants }} apprenant{{ cours.apprenants > 1 ? 's' : '' }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Taux de présence -->
+                            <div class="presence-stats">
+                                <div class="presence-header">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <span>Taux de présence</span>
+                                </div>
+                                
+                                {% set tauxPresence = cours.signatures_total > 0 ? ((cours.signatures_obtenues / cours.signatures_total) * 100)|round : 0 %}
+                                
+                                <div class="presence-bar">
+                                    <div class="presence-fill" style="width: {{ tauxPresence }}%"></div>
+                                    <span class="presence-text">{{ cours.signatures_obtenues }}/{{ cours.signatures_total }}</span>
+                                </div>
+                                
+                                <div class="presence-percentage {{ tauxPresence >= 80 ? 'good' : (tauxPresence >= 60 ? 'medium' : 'low') }}">
+                                    {{ tauxPresence }}% de présence
+                                </div>
                             </div>
                         </div>
-                        <div class="cours-signatures">
-                            {{ cours.signatures_obtenues }}/{{ cours.signatures_total }} Signatures
-                        </div>
-                    </a>
-                {% else %}
-                    <div style="text-align:center;color:#888;margin:40px 0;">
-                        Aucun cours passé trouvé dans votre historique.
+
+                        <!-- Actions 
+                       <div class="cours-actions">
+                           <a href="#" class="action-btn secondary" title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                                Détails
+                            </a>
+                            <a href="#" class="action-btn primary" title="Télécharger la fiche">
+                                <i class="fas fa-download"></i>
+                                Fiche émargement
+                            </a>
+                        </div>-->
                     </div>
                 {% endfor %}
             </div>
-
-            <div class="pagination">
-                <a href="#" class="pagination-prev">&lt;</a>
-                <span class="pagination-current">1</span>
-                <a href="#" class="pagination-next">&gt;</a>
+        {% else %}
+            <!-- État vide -->
+            <div class="empty-state">
+                <i class="fas fa-history"></i>
+                <h3>Aucune session terminée</h3>
+                <p>Vos sessions terminées apparaîtront ici après leur achèvement.</p>
             </div>
-        </div>
+        {% endif %}
     </div>
+</div>
+
+<!-- Styles CSS spécifiques à l'historique -->
+<style>
+/* Statistiques rapides */
+.stats-quick {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+    min-width: 120px;
+}
+
+.stat-item i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+/* Cartes d'historique */
+.historique-card {
+    background: var(--white);
+    border: 1px solid #e9ecef;
+    transition: var(--transition);
+}
+
+.historique-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.cours-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.cours-badge.completed {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cours-formation {
+    color: var(--text-light);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Grille d'informations */
+.cours-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+}
+
+.info-item i {
+    color: var(--primary-color);
+    font-size: 0.875rem;
+    width: 16px;
+    text-align: center;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-weight: 500;
+    min-width: 60px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.875rem;
+}
+
+/* Statistiques de présence */
+.presence-stats {
+    background: linear-gradient(135deg, rgba(232, 92, 51, 0.05), rgba(14, 30, 91, 0.05));
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.presence-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.presence-header i {
+    color: var(--primary-color);
+}
+
+.presence-bar {
+    position: relative;
+    background: #e9ecef;
+    border-radius: 6px;
+    height: 24px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.presence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #ff7a50);
+    border-radius: 6px;
+    transition: width 0.8s ease-in-out;
+}
+
+.presence-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.presence-percentage {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.presence-percentage.good { color: #28a745; }
+.presence-percentage.medium { color: #ffc107; }
+.presence-percentage.low { color: #dc3545; }
+
+/* Actions */
+.cours-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.action-btn.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.action-btn.secondary {
+    background: var(--white);
+    color: var(--text-dark);
+    border: 1px solid #e9ecef;
+}
+
+.action-btn.secondary:hover {
+    background: var(--bg-light);
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-quick {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .stat-item {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .cours-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .cours-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        justify-content: center;
+    }
+}
+</style>
 {% endblock %}

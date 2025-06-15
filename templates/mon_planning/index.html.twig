@@ -1,36 +1,133 @@
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon planning intervenant{% endblock %}
+{% block title %}Mon planning formateur{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+    {# CSS harmonisé avec le dashboard #}
+    <link rel="stylesheet" href="{{ asset('css/formateur/dashboard_formateur.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/formateur/planning_moderne.css') }}">
+    {# FullCalendar moderne #}
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/planning.css') }}">
+    {# Font Awesome pour les icônes #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block body %}
-<div class="planning-container">
-    <div class="planning-header">
-        <div class="avatar-circle">
-            {{ formateur.firstname|default('F')|first|upper }}{{ formateur.lastname|default('A')|first|upper }}
+<div class="dashboard-container">
+    <!-- Header moderne identique au dashboard -->
+    <div class="dashboard-header">
+        <div class="header-left">
+            <div class="user-avatar">
+                {{ app.user.firstname|slice(0, 1)|upper }}{{ app.user.lastname|slice(0, 1)|upper }}
+            </div>
+            <div class="user-info">
+                <h1>Bonjour, {{ app.user.firstname }}</h1>
+                <p>{{ "now"|date("l d F Y") }}</p>
+            </div>
         </div>
-        <a href="{{ path('app_logout') }}">Déconnexion</a>
-        <div class="logout-container">
+        
+        <div class="header-right">
+            <img src="{{ asset('images/gefor.jpg') }}" alt="Groupe GEFOR" class="logo">
             <form action="{{ path('app_logout') }}" method="post">
-                <button type="submit" class="logout-btn">Déconnexion</button>
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
             </form>
         </div>
-        <img src="{{ asset('images/gefor.jpg') }}" class="planning-logo" alt="Logo Gefor">
-        <nav class="planning-nav">
-            <a href="{{ path('formateur_dashboard') }}" class="nav-link">Sessions</a>
-            <a href="{{ path('mon_planning') }}" class="nav-link active">Mon planning</a>
-            <a class="nav-item"href="{{ path('formateur_historique')}}">Historiques</a>
-        </nav>
     </div>
 
-    <div class="planning-main">
-        <div id="calendar"></div>
+    <!-- Navigation identique au dashboard -->
+    <nav class="navigation-tabs">
+        <a href="{{ path('formateur_dashboard') }}" class="nav-tab">
+            <i class="fas fa-home"></i> Sessions
+        </a>
+        <a href="{{ path('mon_planning') }}" class="nav-tab active">
+            <i class="fas fa-calendar"></i> Mon planning
+        </a>
+        <a href="{{ path('formateur_historique') }}" class="nav-tab">
+            <i class="fas fa-history"></i> Historique
+        </a>
+    </nav>
+
+    <!-- Section Planning -->
+    <div class="sessions-section">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Mon planning</h2>
+                <p class="section-subtitle">Calendrier de vos sessions de formation</p>
+            </div>
+        </div>
+
+        <!-- Légende du calendrier -->
+        <div class="calendar-legend">
+            <h3><i class="fas fa-info-circle"></i> Légende</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-color legend-upcoming"></span>
+                    <span>Sessions à venir</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color legend-current"></span>
+                    <span>Sessions en cours</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color legend-completed"></span>
+                    <span>Sessions terminées</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color legend-cancelled"></span>
+                    <span>Sessions annulées</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendrier moderne -->
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- Modal pour les détails des événements -->
+    <div id="eventModal" class="event-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="info-item">
+                        <i class="fas fa-door-open"></i>
+                        <span class="info-label">Salle :</span>
+                        <span id="modalSalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
+                        <span class="info-label">Groupe :</span>
+                        <span id="modalGroupe"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="info-label">Horaires :</span>
+                        <span id="modalHoraires"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user-graduate"></i>
+                        <span class="info-label">Participants :</span>
+                        <span id="modalParticipants"></span>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <a id="modalLinkPresence" href="#" class="btn-action">
+                        <i class="fas fa-clipboard-check"></i>
+                        Fiche de présence
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -40,7 +137,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Les events sont passés en JSON depuis le contrôleur
+            // Configuration des événements du calendrier
             let calendarEvents = [];
             {% if calendar_events is defined %}
                 calendarEvents = {{ calendar_events|raw }};
@@ -48,31 +145,138 @@
 
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
+                initialView: 'timeGridWeek',
                 locale: 'fr',
                 firstDay: 1,
+                slotMinTime: '07:00:00',
+                slotMaxTime: '20:00:00',
+                allDaySlot: false,
+                height: 'auto',
+                
                 headerToolbar: {
-                    left: 'prev,next',
+                    left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,dayGridWeek,dayGridDay'
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
                 },
+                
                 buttonText: {
-                    today:    'Auj.',
-                    month:    'Mois',
-                    week:     'Semaine',
-                    day:      'Jour'
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Liste'
                 },
+                
                 events: calendarEvents,
+                
+                //  CORRECTION : Améliorer la gestion des couleurs selon l'état de la session
+                eventClassNames: function(arg) {
+                    const event = arg.event;
+                    const now = new Date();
+                    const eventStart = event.start;
+                    const eventEnd = event.end;
+                    
+                    // Déterminer la classe selon l'état de la session
+                    if (eventEnd && eventEnd < now) {
+                        return ['event-completed']; // Session terminée - gris
+                    } else if (eventStart && eventStart <= now && eventEnd && eventEnd >= now) {
+                        return ['event-current']; // Session en cours - vert
+                    } else if (event.extendedProps.cancelled) {
+                        return ['event-cancelled']; // Session annulée - rouge
+                    } else {
+                        return ['event-upcoming']; // Session à venir - bleu
+                    }
+                },
+                
+                // AMÉLIORATION : Changer la couleur de fond selon l'état
+                eventDidMount: function(info) {
+                    const event = info.event;
+                    const now = new Date();
+                    const eventStart = event.start;
+                    const eventEnd = event.end;
+                    
+                    // Définir les couleurs selon l'état
+                    if (eventEnd && eventEnd < now) {
+                        // Session terminée - gris
+                        info.el.style.backgroundColor = '#6c757d';
+                        info.el.style.borderColor = '#6c757d';
+                    } else if (eventStart && eventStart <= now && eventEnd && eventEnd >= now) {
+                        // Session en cours - vert
+                        info.el.style.backgroundColor = '#28a745';
+                        info.el.style.borderColor = '#28a745';
+                    } else if (event.extendedProps.cancelled) {
+                        // Session annulée - rouge
+                        info.el.style.backgroundColor = '#dc3545';
+                        info.el.style.borderColor = '#dc3545';
+                    } else {
+                        // Session à venir - bleu (couleur par défaut)
+                        info.el.style.backgroundColor = '#007bff';
+                        info.el.style.borderColor = '#007bff';
+                    }
+                    
+                    // Ajouter des informations au survol
+                    const tooltip = `${event.title}
+Salle : ${event.extendedProps.salle || 'À définir'}
+Horaires : ${event.start.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})} - ${event.end ? event.end.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : ''}`;
+                    
+                    info.el.setAttribute('title', tooltip);
+                },
+                
+                //  CORRECTION : Remplir correctement la modal avec les bonnes données
                 eventClick: function(info) {
-                    // Exemple : affiche le détail du cours
-                    alert(
-                        'Cours : ' + info.event.title +
-                        '\\nDébut : ' + info.event.start.toLocaleDateString()
-                        // Tu peux enrichir ici (ex : salle, groupe, etc.)
-                    );
+                    const event = info.event;
+                    const modal = document.getElementById('eventModal');
+                    
+                    // Remplir les champs de la modal avec les données de extendedProps
+                    document.getElementById('modalTitle').textContent = event.title;
+                    document.getElementById('modalSalle').textContent = event.extendedProps.salle || 'À définir';
+                    document.getElementById('modalGroupe').textContent = event.extendedProps.groupe || 'Non spécifié';
+                    document.getElementById('modalParticipants').textContent = event.extendedProps.participants || '0';
+                    
+                    // Formater les horaires
+                    const startTime = event.start.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+                    const endTime = event.end ? event.end.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : '';
+                    document.getElementById('modalHoraires').textContent = `${startTime} - ${endTime}`;
+                    
+                    // Lien vers la fiche de présence si disponible
+                    const linkPresence = document.getElementById('modalLinkPresence');
+                    if (event.extendedProps.sessionId) {
+                        linkPresence.href = `/fiche-presence/${event.extendedProps.sessionId}`;
+                        linkPresence.style.display = 'flex';
+                    } else {
+                        linkPresence.style.display = 'none';
+                    }
+                    
+                    // Afficher la modal
+                    modal.style.display = 'flex';
                 }
             });
+            
+            // Rendre le calendrier
             calendar.render();
+            
+            //  CORRECTION : Gestion de la modal avec les bons sélecteurs
+            const modal = document.getElementById('eventModal');
+            const closeBtn = document.getElementById('modalClose');
+            
+            // Fermer la modal avec le bouton X
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Fermer la modal en cliquant à l'extérieur
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Fermeture avec la touche Échap
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                }
+            });
         });
     </script>
 {% endblock %}
